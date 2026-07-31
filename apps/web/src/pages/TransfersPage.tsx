@@ -27,6 +27,40 @@ import { useSession } from '../lib/auth-client';
 import { getErrorMessage } from '../lib/errors';
 import { translateStatus } from '../lib/status';
 
+interface Establishment {
+  nomEtablissement: string;
+  logoPath?: string;
+}
+
+function FormHeader({
+  selectedBank,
+  establishments,
+}: {
+  selectedBank?: string;
+  establishments: unknown[];
+}) {
+  const establishment = selectedBank
+    ? (establishments as Establishment[]).find((e) => e.nomEtablissement === selectedBank)
+    : null;
+
+  if (!establishment) {
+    return 'Nouveau virement';
+  }
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+      {establishment.logoPath && (
+        <img
+          src={establishment.logoPath}
+          alt={establishment.nomEtablissement}
+          style={{ maxHeight: '32px', maxWidth: '100px', objectFit: 'contain' }}
+        />
+      )}
+      <span>{establishment.nomEtablissement}</span>
+    </div>
+  );
+}
+
 type ListResponse = InferResponseType<typeof client.api.transfers.$get>;
 type TransferItem = ListResponse extends { transfers: infer T } ? T : never;
 type Transfer = TransferItem extends Array<infer U> ? U : never;
@@ -38,6 +72,7 @@ export function TransfersPage() {
   const [form] = Form.useForm();
   const [filterForm] = Form.useForm();
   const [showForm, setShowForm] = useState(false);
+  const [selectedBank, setSelectedBank] = useState<string | undefined>(undefined);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [rejectingTransfer, setRejectingTransfer] = useState<Transfer | null>(null);
   const [rejectForm] = Form.useForm();
@@ -60,6 +95,8 @@ export function TransfersPage() {
         transactionReference: generateTransactionReference(),
         currency: 'EUR',
       });
+    } else {
+      setSelectedBank(undefined);
     }
   }, [showForm, form, generateTransactionReference]);
 
@@ -161,7 +198,7 @@ export function TransfersPage() {
       render: (name: string | undefined) => name || '-',
     },
     {
-      title: 'IBAN',
+      title: 'IBAN / BE',
       dataIndex: 'iban',
       key: 'iban',
       responsive: ['lg'] as Breakpoint[],
@@ -286,7 +323,14 @@ export function TransfersPage() {
       </Card>
 
       {showForm && (
-        <Card title="Nouveau virement">
+        <Card
+          title={
+            <FormHeader
+              selectedBank={selectedBank}
+              establishments={establishmentsQuery.data?.establishments || []}
+            />
+          }
+        >
           <Form
             form={form}
             layout="vertical"
@@ -303,6 +347,10 @@ export function TransfersPage() {
                   <Select
                     placeholder="Sélectionnez un établissement..."
                     loading={establishmentsQuery.isLoading}
+                    onChange={(value: string) => {
+                      setSelectedBank(value);
+                      form.validateFields(['senderBank']);
+                    }}
                     options={
                       establishmentsQuery.data?.establishments?.map(
                         (e: Record<string, unknown>) => ({
@@ -345,7 +393,7 @@ export function TransfersPage() {
                 </Form.Item>
               </Col>
               <Col xs={24} md={12}>
-                <Form.Item label="IBAN" name="iban">
+                <Form.Item label="IBAN / BE" name="iban">
                   <Input placeholder="BE92437217453123" />
                 </Form.Item>
               </Col>

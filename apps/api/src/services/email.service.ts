@@ -51,7 +51,7 @@ const emailTemplates = {
     sender: "Donneur d'ordre",
     attachment:
       'Vous trouverez ci-joint le document officiel PDF de ce virement, à conserver pour vos dossiers.',
-    signature: "L'équipe TransferFlow",
+    signature: "L'équipe",
     // Rejet
     subjectReject: 'Virement rejeté',
     introReject:
@@ -89,7 +89,7 @@ const emailTemplates = {
     sender: 'Opdrachtgever',
     attachment:
       'U vindt hierbij het officiële PDF-document van deze overboeking, te bewaren voor uw dossier.',
-    signature: 'Het TransferFlow-team',
+    signature: 'Het team',
     // Rejet
     subjectReject: 'Overboeking geweigerd',
     introReject:
@@ -191,8 +191,7 @@ export async function sendTransferNotificationEmail(
         <div class="banner">
           <div class="banner-content">
             ${params.establishmentLogo ? `<img src="${params.establishmentLogo}" alt="Logo" class="banner-logo" />` : ''}
-            <span class="banner-mark">TF</span>
-            <span class="banner-brand">TRANSFERFLOW</span>
+            <span class="banner-brand">${params.establishmentName.toUpperCase()}</span>
           </div>
           <h1>${subject}</h1>
         </div>
@@ -248,7 +247,7 @@ export async function sendTransferNotificationEmail(
             ${params.pdfBuffer ? `<p>${template.attachment}</p>` : ''}
           </div>
 
-          <p style="margin-top: 24px;">${template.signature}</p>
+          <p style="margin-top: 24px;">L'équipe ${params.establishmentName}</p>
 
           <div class="footer">
             <p>${template.footer}</p>
