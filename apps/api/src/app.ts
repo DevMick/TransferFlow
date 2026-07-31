@@ -3,9 +3,15 @@ import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 import { auth } from './auth/index.js';
 import { env } from './env.js';
+import { errorHandler } from './middleware/error.js';
+import { rateLimit } from './middleware/rate-limit.js';
+import { authRouter } from './routes/auth.js';
 import { transfersRouter } from './routes/transfers.js';
+import { dashboardRouter } from './routes/dashboard.js';
+import { referenceRouter } from './routes/reference.js';
+import { establishmentsRouter } from './routes/establishments.js';
 
-const allowedOrigins = [env.BETTER_AUTH_URL, 'http://localhost:5173'];
+const allowedOrigins = [env.BETTER_AUTH_URL, 'http://localhost:5173', 'http://localhost:5174'];
 
 /**
  * The Hono application. The `routes` const below is intentionally the result of
@@ -14,6 +20,8 @@ const allowedOrigins = [env.BETTER_AUTH_URL, 'http://localhost:5173'];
  */
 const app = new Hono()
   .use('*', logger())
+  .use('*', errorHandler)
+  .use('*', rateLimit({ limit: 100, windowMs: 15 * 60 * 1000 }))
   .use(
     '/api/*',
     cors({
@@ -33,7 +41,7 @@ const app = new Hono()
   // Better-Auth mounts all of its own endpoints under /api/auth/*
   .on(['POST', 'GET'], '/api/auth/*', (c) => auth.handler(c.req.raw));
 
-const routes = app.route('/api/transfers', transfersRouter);
+const routes = app.route('/api/users', authRouter).route('/api/transfers', transfersRouter).route('/api/dashboard', dashboardRouter).route('/api/reference', referenceRouter).route('/api/establishments', establishmentsRouter);
 
 export type AppType = typeof routes;
 export { routes };

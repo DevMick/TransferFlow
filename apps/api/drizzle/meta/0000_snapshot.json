@@ -1,5 +1,5 @@
 {
-  "id": "9d4e1c3a-97fd-4c5d-bde0-b2df3ab435f8",
+  "id": "d6f521d8-f678-4d22-9645-990584353098",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -109,6 +109,106 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.bank": {
+      "name": "bank",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "country": {
+          "name": "country",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "bank_name_unique": {
+          "name": "bank_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "name"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.currency": {
+      "name": "currency",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "symbol": {
+          "name": "symbol",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "currency_code_unique": {
+          "name": "currency_code_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "code"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.session": {
       "name": "session",
       "schema": "",
@@ -209,21 +309,33 @@
           "primaryKey": false,
           "notNull": true
         },
-        "recipient_name": {
-          "name": "recipient_name",
+        "beneficiary_name": {
+          "name": "beneficiary_name",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "recipient_iban": {
-          "name": "recipient_iban",
+        "beneficiary_email": {
+          "name": "beneficiary_email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "iban": {
+          "name": "iban",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bank_name": {
+          "name": "bank_name",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
         "amount": {
           "name": "amount",
-          "type": "numeric(14, 2)",
+          "type": "numeric(19, 4)",
           "primaryKey": false,
           "notNull": true
         },
@@ -246,7 +358,7 @@
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
-          "default": "'pending'"
+          "default": "'initiated'"
         },
         "created_at": {
           "name": "created_at",
@@ -261,6 +373,18 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
+        },
+        "rejected_at": {
+          "name": "rejected_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rejection_reason": {
+          "name": "rejection_reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
@@ -403,11 +527,8 @@
       "name": "transfer_status",
       "schema": "public",
       "values": [
-        "pending",
-        "processing",
-        "completed",
-        "failed",
-        "cancelled"
+        "initiated",
+        "rejected"
       ]
     }
   },

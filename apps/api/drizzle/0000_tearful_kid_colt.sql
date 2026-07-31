@@ -1,4 +1,4 @@
-CREATE TYPE "public"."transfer_status" AS ENUM('pending', 'processing', 'completed', 'failed', 'cancelled');--> statement-breakpoint
+CREATE TYPE "public"."transfer_status" AS ENUM('initiated', 'rejected');--> statement-breakpoint
 CREATE TABLE "account" (
 	"id" text PRIMARY KEY NOT NULL,
 	"account_id" text NOT NULL,
@@ -13,6 +13,23 @@ CREATE TABLE "account" (
 	"password" text,
 	"created_at" timestamp NOT NULL,
 	"updated_at" timestamp NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "bank" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"name" text NOT NULL,
+	"country" text NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "bank_name_unique" UNIQUE("name")
+);
+--> statement-breakpoint
+CREATE TABLE "currency" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"code" text NOT NULL,
+	"name" text NOT NULL,
+	"symbol" text NOT NULL,
+	"is_active" boolean DEFAULT true NOT NULL,
+	CONSTRAINT "currency_code_unique" UNIQUE("code")
 );
 --> statement-breakpoint
 CREATE TABLE "session" (
@@ -30,14 +47,18 @@ CREATE TABLE "session" (
 CREATE TABLE "transfer" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" text NOT NULL,
-	"recipient_name" text NOT NULL,
-	"recipient_iban" text NOT NULL,
-	"amount" numeric(14, 2) NOT NULL,
+	"beneficiary_name" text NOT NULL,
+	"beneficiary_email" text NOT NULL,
+	"iban" text NOT NULL,
+	"bank_name" text NOT NULL,
+	"amount" numeric(19, 4) NOT NULL,
 	"currency" text DEFAULT 'EUR' NOT NULL,
 	"reference" text,
-	"status" "transfer_status" DEFAULT 'pending' NOT NULL,
+	"status" "transfer_status" DEFAULT 'initiated' NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"rejected_at" timestamp,
+	"rejection_reason" text
 );
 --> statement-breakpoint
 CREATE TABLE "user" (

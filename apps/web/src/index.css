@@ -1,0 +1,306 @@
+:root {
+  --tf-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+  --tf-primary: #4f46e5;
+  --tf-primary-dark: #4338ca;
+  --tf-accent: #14b8a6;
+  --tf-radius: 12px;
+  --tf-header-height: 64px;
+  --tf-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 55%, #14b8a6 120%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--tf-font);
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Mobile-first: hide desktop-only / mobile-only helpers via breakpoint */
+.tf-desktop-only {
+  display: none;
+}
+
+.tf-mobile-only {
+  display: inline-flex;
+}
+
+@media (min-width: 768px) {
+  .tf-desktop-only {
+    display: flex;
+  }
+
+  .tf-mobile-only {
+    display: none;
+  }
+}
+
+.tf-page {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.tf-hero {
+  border-radius: var(--tf-radius);
+  padding: 28px 20px;
+  color: #fff;
+  background: var(--tf-gradient);
+  position: relative;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .tf-hero {
+    padding: 48px 40px;
+  }
+}
+
+.tf-hero h1,
+.tf-hero .ant-typography {
+  color: #fff !important;
+}
+
+.tf-stat-card .ant-statistic-title {
+  font-size: 13px;
+  color: var(--tf-muted, #8c8c8c);
+}
+
+.tf-stat-card {
+  height: 100%;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.tf-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.tf-stat-card .ant-card-body {
+  padding: 16px;
+}
+
+.tf-stat-value .ant-statistic-content-value {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
+.tf-stat-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.tf-panel-card {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.tf-panel-card .ant-card-head-title {
+  font-weight: 600;
+}
+
+.tf-distribution-row {
+  width: 100%;
+}
+
+.tf-distribution-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.tf-distribution-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.tf-distribution-count {
+  flex-shrink: 0;
+  color: var(--tf-muted, #8c8c8c);
+}
+
+.tf-profile-hero .ant-card-body {
+  padding: 20px 24px;
+}
+
+.tf-profile-avatar {
+  background: var(--tf-gradient);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.tf-danger-card .ant-card-body {
+  padding: 16px 20px;
+}
+
+/* Responsive table scroll wrapper so wide tables don't break mobile layout */
+.tf-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Stack inline filter forms on small screens */
+.tf-filter-form .ant-form-item {
+  flex: 1 1 140px;
+  margin-inline-end: 12px;
+}
+
+@media (max-width: 576px) {
+  .tf-filter-form.ant-form-inline {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tf-filter-form .ant-form-item {
+    width: 100%;
+    margin-inline-end: 0;
+  }
+}
+
+.tf-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+/* Authenticated sidebar */
+.tf-sider {
+  position: relative;
+}
+
+.tf-sider .ant-layout-sider-children {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.tf-sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.tf-sidebar-menu {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  border-inline-end: none !important;
+  background: transparent !important;
+  padding: 8px;
+}
+
+.tf-sidebar-menu .ant-menu-item {
+  border-radius: 8px;
+  margin-block: 4px;
+}
+
+.tf-user-card-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tf-user-card-email {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tf-sider-collapse-btn {
+  flex-shrink: 0;
+  width: 100%;
+  border-radius: 0 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  height: 40px;
+}
+
+.tf-app-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding-inline: 16px;
+  height: var(--tf-header-height);
+  line-height: normal;
+}
+
+.tf-logo-btn {
+  border: none;
+  background: transparent;
+  padding: 4px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.tf-logo-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.tf-header-spacer {
+  flex: 1;
+}
+
+.tf-header-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px 4px 4px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #fff;
+  font: inherit;
+}
+
+.tf-header-user:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.tf-header-user-text {
+  display: none;
+  flex-direction: column;
+  min-width: 0;
+  text-align: left;
+}
+
+@media (min-width: 768px) {
+  .tf-header-user-text {
+    display: flex;
+  }
+}

@@ -68,11 +68,8 @@ export const verification = pgTable('verification', {
 // ---------------------------------------------------------------------------
 
 export const transferStatus = pgEnum('transfer_status', [
-  'pending',
-  'processing',
-  'completed',
-  'failed',
-  'cancelled',
+  'initiated',
+  'rejected',
 ]);
 
 export const transfer = pgTable('transfer', {
@@ -80,15 +77,77 @@ export const transfer = pgTable('transfer', {
   userId: text('user_id')
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
-  recipientName: text('recipient_name').notNull(),
-  recipientIban: text('recipient_iban').notNull(),
-  amount: numeric('amount', { precision: 14, scale: 2 }).notNull(),
-  currency: text('currency').notNull().default('EUR'),
+  
+  // Détails de la transaction
+  senderBank: text('sender_bank'),
+  transactionReference: text('transaction_reference'),
+  executionDate: timestamp('execution_date'),
+  status: text('status').notNull().default('Initié'),
+  
+  // Informations du donneur d'ordre
+  senderAccountName: text('sender_account_name'),
+  senderAccountNumber: text('sender_account_number'),
+  
+  // Bénéficiaire
+  beneficiaryName: text('beneficiary_name'),
+  beneficiaryEmail: text('beneficiary_email'),
+  iban: text('iban'),
+  bicSwift: text('bic_swift'),
+  
+  // Montant
+  amount: numeric('amount', { precision: 19, scale: 4 }),
+  currency: text('currency').default('EUR'),
+
+  // Langue des documents (email + PDF)
+  language: text('language').default('fr'),
+  
+  // Rejet
+  rejectionFee: numeric('rejection_fee', { precision: 19, scale: 4 }),
+  rejectionFeeCurrency: text('rejection_fee_currency'),
+  rejectionReason: text('rejection_reason'),
+  
+  // Anciens champs (maintenus pour compatibilité)
+  bankName: text('bank_name'),
   reference: text('reference'),
-  status: transferStatus('status').notNull().default('pending'),
+  
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  rejectedAt: timestamp('rejected_at'),
+});
+
+export const bank = pgTable('bank', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull().unique(),
+  country: text('country').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const currency = pgTable('currency', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  code: text('code').notNull().unique(),
+  name: text('name').notNull(),
+  symbol: text('symbol').notNull(),
+  isActive: boolean('is_active').notNull().default(true),
+});
+
+export const establishment = pgTable('establishment', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  logoPath: text('logo_path'),
+  nomEtablissement: text('nom_etablissement').notNull(),
+  formeJuridique: text('forme_juridique'),
+  adresseRue: text('adresse_rue'),
+  codePostal: text('code_postal'),
+  ville: text('ville'),
+  pays: text('pays'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
 export type TransferRow = typeof transfer.$inferSelect;
 export type NewTransferRow = typeof transfer.$inferInsert;
+export type BankRow = typeof bank.$inferSelect;
+export type NewBankRow = typeof bank.$inferInsert;
+export type CurrencyRow = typeof currency.$inferSelect;
+export type NewCurrencyRow = typeof currency.$inferInsert;
+export type EstablishmentRow = typeof establishment.$inferSelect;
+export type NewEstablishmentRow = typeof establishment.$inferInsert;

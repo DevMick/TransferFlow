@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm install *)",
+      "Bash(pnpm typecheck *)",
+      "Bash(npx biome *)",
+      "Bash(pnpm preview-logs *)",
+      "Bash(pnpm dev *)",
+      "Bash(node test-smtp.js)",
+      "Bash(node -e ' *)",
+      "Bash(taskkill /PID 8388 /F)",
+      "PowerShell(Stop-Process -Id 8388 -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(try { $response = Invoke-WebRequest -Uri \"http://localhost:3000/api/transfers\" -Method Get -ErrorAction Stop; $response.StatusCode } catch { $_.Exception.Message })",
+      "PowerShell(Get-Process node -ErrorAction SilentlyContinue | Select-Object ProcessName, Id, @{Name=\"CommandLine\";Expression={$_.CommandLine}})",
+      "PowerShell($response = Invoke-WebRequest -Uri \"http://localhost:3000/api/transfers/fddfca9b-2a85-495a-904a-f51f7e6f1503/pdf/initiation\" -Method Get -ErrorAction SilentlyContinue; if \\($response\\) { \"Status: $\\($response.StatusCode\\)\"; $response.Content | Select-Object -First 200 } else { \"No response\" })",
+      "Bash(netstat -ano)",
+      "PowerShell(Get-Process node -ErrorAction SilentlyContinue)",
+      "PowerShell(Stop-Process -Force)",
+      "PowerShell(\"Processes stopped\")",
+      "PowerShell(\"Servers should be started\")",
+      "Bash(git add *)"
+    ]
+  }
+}
