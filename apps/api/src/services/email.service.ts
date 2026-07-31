@@ -175,10 +175,10 @@ export async function sendTransferNotificationEmail(
         * { box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; color: #2d3748; background: #f7fafc; margin: 0; padding: 0; }
         .container { max-width: 600px; margin: 0 auto; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .banner { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 28px 28px 24px; display: flex; align-items: center; gap: 16px; }
-        .banner-logo { max-height: 48px; max-width: 160px; height: auto; width: auto; object-fit: contain; }
-        .banner-title { flex: 1; }
-        .banner-brand { display: block; font-size: 13px; font-weight: 600; color: #718096; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .banner { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 24px 28px; display: flex; flex-direction: column; gap: 12px; }
+        .banner-logo-section { display: flex; align-items: center; gap: 12px; }
+        .banner-logo { max-height: 48px; max-width: 160px; height: auto; width: auto; object-fit: contain; flex-shrink: 0; }
+        .banner-brand { font-size: 13px; font-weight: 600; color: #718096; letter-spacing: 0.5px; }
         h1 { color: #1a202c; font-size: 20px; margin: 0; line-height: 1.4; }
         .content { line-height: 1.6; padding: 28px; color: #2d3748; }
         p { margin: 0 0 16px 0; }
@@ -203,11 +203,11 @@ export async function sendTransferNotificationEmail(
     <body>
       <div class="container">
         <div class="banner">
-          ${logoCid ? `<img src="cid:${logoCid}" alt="Logo" class="banner-logo" />` : ''}
-          <div class="banner-title">
+          <div class="banner-logo-section">
+            ${logoCid ? `<img src="cid:${logoCid}" alt="Logo" class="banner-logo" />` : ''}
             <span class="banner-brand">${params.establishmentName.toUpperCase()}</span>
-            <h1>${subject}</h1>
           </div>
+          <h1>${subject}</h1>
         </div>
         <div class="content">
           <p>${template.greeting} ${params.recipientName},</p>
