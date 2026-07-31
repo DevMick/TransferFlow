@@ -62,6 +62,7 @@ jobs:
             git checkout main
             git pull origin main
             pnpm install --frozen-lockfile
+            export VITE_API_URL=https://transfertsecur.com/api
             pnpm build
             pnpm db:migrate
             sudo systemctl restart transferflow-api
