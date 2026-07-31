@@ -38,6 +38,14 @@ const app = new Hono()
       timestamp: new Date().toISOString(),
     }),
   )
+  // Also exposed under /api/health since Nginx only proxies the /api/* prefix to this service
+  .get('/api/health', (c) =>
+    c.json({
+      status: 'ok',
+      service: 'transferflow-api',
+      timestamp: new Date().toISOString(),
+    }),
+  )
   // Better-Auth mounts all of its own endpoints under /api/auth/*
   .on(['POST', 'GET'], '/api/auth/*', (c) => auth.handler(c.req.raw));
 

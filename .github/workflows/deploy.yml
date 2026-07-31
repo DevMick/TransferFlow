@@ -65,7 +65,6 @@ jobs:
             pnpm build
             pnpm db:migrate
             sudo systemctl restart transferflow-api
-            sudo systemctl restart transferflow-web
 
       - name: Verify deployment
         run: |
