@@ -106,6 +106,7 @@ function formatDateTime(date: Date, language: Language): string {
     year: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
+    timeZone: 'Europe/Brussels',
   });
 }
 
@@ -182,7 +183,7 @@ function drawHeader(
   const execDate = transfer.executionDate
     ? new Date(transfer.executionDate)
     : new Date(transfer.createdAt);
-  const execValue = execDate.toLocaleDateString(language === 'nl' ? 'nl-BE' : 'fr-BE');
+  const execValue = formatDateTime(execDate, language);
 
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(...GRAY);

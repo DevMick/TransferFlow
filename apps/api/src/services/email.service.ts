@@ -170,7 +170,7 @@ export async function sendTransferNotificationEmail(
         .container { max-width: 600px; margin: 0 auto; background: #fff; }
         .banner { background: linear-gradient(135deg, #4f46e5, #4338ca); padding: 28px 28px 24px; }
         .banner-content { display: flex; align-items: center; }
-        .banner-logo { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; margin-right: 12px; }
+        .banner-logo { max-height: 44px; max-width: 180px; height: auto; width: auto; background: #fff; border-radius: 6px; padding: 4px 8px; object-fit: contain; margin-right: 12px; }
         .banner-mark { display: inline-block; width: 32px; height: 32px; line-height: 32px; text-align: center; background: rgba(255,255,255,0.16); border-radius: 8px; color: #fff; font-weight: bold; font-size: 13px; vertical-align: middle; }
         .banner-brand { display: inline-block; margin-left: 10px; color: #fff; font-size: 14px; font-weight: 600; letter-spacing: 0.5px; vertical-align: middle; }
         h1 { color: #fff; font-size: 22px; margin: 16px 0 0 0; }
@@ -235,7 +235,7 @@ export async function sendTransferNotificationEmail(
 
             <div class="detail-row">
               <span class="detail-label">${template.date}:</span>
-              <span class="detail-value">${new Date(params.initiationDate).toLocaleDateString(language === 'fr' ? 'fr-FR' : 'nl-NL', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}</span>
+              <span class="detail-value">${new Date(params.initiationDate).toLocaleString(language === 'fr' ? 'fr-BE' : 'nl-BE', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Brussels' })}</span>
             </div>
 
             ${rejectionReasonSection}
