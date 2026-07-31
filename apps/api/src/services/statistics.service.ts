@@ -21,6 +21,7 @@ export interface StatisticsData {
 /**
  * Statistics service for dashboard and analytics
  */
+// biome-ignore lint/complexity/noStaticOnlyClass: Service pattern for organization
 export class StatisticsService {
   /**
    * Get dashboard statistics

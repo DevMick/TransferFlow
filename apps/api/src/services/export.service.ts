@@ -6,6 +6,7 @@ import type { TransferRow } from '../db/schema.js';
 /**
  * Export service for CSV, Excel, and PDF exports
  */
+// biome-ignore lint/complexity/noStaticOnlyClass: Service pattern for organization
 export class ExportService {
   /**
    * Export transfers to CSV
@@ -71,6 +72,7 @@ export class ExportService {
     doc.setFont('helvetica', 'normal');
 
     // Table rows
+    // biome-ignore lint/complexity/noForEach: Simpler logic with forEach here
     transfers.forEach((transfer) => {
       if (y > 270) {
         doc.addPage();

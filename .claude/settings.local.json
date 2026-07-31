@@ -38,7 +38,8 @@
       "Bash(pnpm lint *)",
       "Bash(git commit -m 'fix: resolve linting and type errors for production deployment *)",
       "Bash(git commit -m 'fix: resolve remaining linting errors for production deployment *)",
-      "Bash(git commit -m 'fix: wrap generateTransactionReference in useCallback and fix formatting *)"
+      "Bash(git commit -m 'fix: wrap generateTransactionReference in useCallback and fix formatting *)",
+      "Bash(git commit -m 'fix: add biome ignore comments for style warnings *)"
     ]
   }
 }
