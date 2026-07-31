@@ -162,7 +162,14 @@ export function ProfilePage() {
           </Typography.Text>
         </Space>
         <Divider style={{ margin: '12px 0' }} />
-        <Button danger icon={<LogoutOutlined />} onClick={() => signOut()}>
+        <Button
+          danger
+          icon={<LogoutOutlined />}
+          onClick={async () => {
+            await signOut();
+            navigate('/login');
+          }}
+        >
           Se déconnecter
         </Button>
       </Card>

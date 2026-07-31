@@ -130,7 +130,10 @@ function AppHeader({ isDesktop, onOpenMenu }: AppHeaderProps) {
         aria-label="Déconnexion"
         icon={<LogoutOutlined />}
         style={{ color: '#fff' }}
-        onClick={() => signOut()}
+        onClick={async () => {
+          await signOut();
+          navigate('/login');
+        }}
       />
     </Header>
   );

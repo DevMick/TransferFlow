@@ -1,19 +1,15 @@
 import { SendOutlined } from '@ant-design/icons';
-import { App as AntdApp, Button, Card, Form, Input, Segmented, Space, Typography } from 'antd';
+import { App as AntdApp, Button, Card, Form, Input, Space, Typography } from 'antd';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { signIn, signOut, signUp, useSession } from '../lib/auth-client';
-
-type Mode = 'sign-in' | 'sign-up';
+import { signIn, signOut, useSession } from '../lib/auth-client';
 
 interface FormValues {
-  name?: string;
   email: string;
   password: string;
 }
 
 export function LoginPage() {
-  const [mode, setMode] = useState<Mode>('sign-in');
   const [submitting, setSubmitting] = useState(false);
   const { message } = AntdApp.useApp();
   const { data: session } = useSession();
@@ -22,22 +18,12 @@ export function LoginPage() {
   async function onFinish(values: FormValues) {
     setSubmitting(true);
     try {
-      if (mode === 'sign-up') {
-        const { error } = await signUp.email({
-          name: values.name ?? values.email,
-          email: values.email,
-          password: values.password,
-        });
-        if (error) throw new Error(error.message ?? 'Inscription échouée');
-        message.success('Compte créé — vous êtes maintenant connecté');
-      } else {
-        const { error } = await signIn.email({
-          email: values.email,
-          password: values.password,
-        });
-        if (error) throw new Error(error.message ?? 'Connexion échouée');
-        message.success('Connecté');
-      }
+      const { error } = await signIn.email({
+        email: values.email,
+        password: values.password,
+      });
+      if (error) throw new Error(error.message ?? 'Connexion échouée');
+      message.success('Connecté');
       navigate('/transfers');
     } catch (err) {
       message.error(err instanceof Error ? err.message : 'Authentification échouée');
@@ -54,7 +40,14 @@ export function LoginPage() {
             <Typography.Text>
               Connecté en tant que <strong>{session.user.email}</strong>
             </Typography.Text>
-            <Button onClick={() => signOut()}>Se déconnecter</Button>
+            <Button
+              onClick={async () => {
+                await signOut();
+                navigate('/login');
+              }}
+            >
+              Se déconnecter
+            </Button>
           </Space>
         </Card>
       </div>
@@ -86,21 +79,7 @@ export function LoginPage() {
             </Typography.Text>
           </Space>
 
-          <Segmented
-            block
-            value={mode}
-            onChange={(v) => setMode(v as Mode)}
-            options={[
-              { label: 'Connexion', value: 'sign-in' },
-              { label: 'Créer un compte', value: 'sign-up' },
-            ]}
-          />
           <Form layout="vertical" onFinish={onFinish}>
-            {mode === 'sign-up' && (
-              <Form.Item label="Nom" name="name">
-                <Input placeholder="Jean Dupont" autoComplete="name" />
-              </Form.Item>
-            )}
             <Form.Item
               label="Email"
               name="email"
@@ -113,13 +92,10 @@ export function LoginPage() {
               name="password"
               rules={[{ required: true, min: 8, message: 'Au moins 8 caractères' }]}
             >
-              <Input.Password
-                placeholder="••••••••"
-                autoComplete={mode === 'sign-up' ? 'new-password' : 'current-password'}
-              />
+              <Input.Password placeholder="••••••••" autoComplete="current-password" />
             </Form.Item>
             <Button type="primary" htmlType="submit" block loading={submitting}>
-              {mode === 'sign-up' ? 'Créer un compte' : 'Se connecter'}
+              Se connecter
             </Button>
           </Form>
         </Space>
