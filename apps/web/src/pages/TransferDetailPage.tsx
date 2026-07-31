@@ -80,7 +80,7 @@ export function TransferDetailPage() {
             </Descriptions.Item>
             {transfer.status === 'rejected' && (
               <Descriptions.Item label="Motif du rejet">
-                {(transfer as Record<string, unknown>).rejectionReason || '-'}
+                {transfer.rejectionReason || '-'}
               </Descriptions.Item>
             )}
           </Descriptions>

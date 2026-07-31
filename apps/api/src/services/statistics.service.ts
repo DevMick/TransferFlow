@@ -1,13 +1,13 @@
 import { and, desc, eq, gte, sql } from 'drizzle-orm';
 import { db } from '../db/index.js';
-import { transfer } from '../db/schema.js';
+import { type TransferRow, transfer } from '../db/schema.js';
 
 export interface DashboardStats {
   totalTransfers: number;
   totalAmount: string;
   initiatedCount: number;
   rejectedCount: number;
-  recentTransfers: Record<string, unknown>[];
+  recentTransfers: TransferRow[];
 }
 
 export interface StatisticsData {

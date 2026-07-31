@@ -5,18 +5,7 @@ import {
   WalletOutlined,
 } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query';
-import {
-  App as AntdApp,
-  Card,
-  Col,
-  Progress,
-  Row,
-  Space,
-  Statistic,
-  Table,
-  Tag,
-  Tooltip,
-} from 'antd';
+import { Card, Col, Progress, Row, Space, Statistic, Table, Tag, Tooltip } from 'antd';
 import type { Breakpoint } from 'antd/es/_util/responsiveObserver';
 import type { InferResponseType } from 'hono/client';
 import { client } from '../lib/api';
@@ -25,12 +14,31 @@ import { translateStatus } from '../lib/status';
 
 type DashboardResponse = InferResponseType<typeof client.api.dashboard.$get>;
 type StatisticsResponse = InferResponseType<typeof client.api.dashboard.statistics.$get>;
+type RecentTransfer = DashboardResponse extends { recentTransfers: infer T }
+  ? T extends Array<infer U>
+    ? U
+    : never
+  : never;
+type TopBeneficiary = StatisticsResponse extends { topBeneficiaries: infer T }
+  ? T extends Array<infer U>
+    ? U
+    : never
+  : never;
+type DistributionItem = StatisticsResponse extends { statusDistribution: infer T }
+  ? T extends Array<infer U>
+    ? U
+    : never
+  : never;
+type BankDistributionItem = StatisticsResponse extends { bankDistribution: infer T }
+  ? T extends Array<infer U>
+    ? U
+    : never
+  : never;
 
 const DISTRIBUTION_COLORS = ['#4f46e5', '#14b8a6', '#f59e0b', '#ec4899', '#06b6d4'];
 
 export function DashboardPage() {
   const { data: session } = useSession();
-  const { message } = AntdApp.useApp();
 
   const { data: dashboardData, isLoading: dashboardLoading } = useQuery({
     queryKey: ['dashboard'],
@@ -74,7 +82,7 @@ export function DashboardPage() {
       title: 'Montant',
       key: 'amount',
       width: 160,
-      render: (_: unknown, row: Record<string, unknown>) => (
+      render: (_: unknown, row: RecentTransfer) => (
         <span style={{ whiteSpace: 'nowrap' }}>
           {Number(row.amount).toLocaleString('fr-BE', { maximumFractionDigits: 2 })} {row.currency}
         </span>
@@ -105,7 +113,7 @@ export function DashboardPage() {
       title: 'Montant total',
       key: 'totalAmount',
       width: 140,
-      render: (_: unknown, row: Record<string, unknown>) => (
+      render: (_: unknown, row: TopBeneficiary) => (
         <span style={{ whiteSpace: 'nowrap' }}>
           {Number(row.totalAmount).toLocaleString('fr-BE', { maximumFractionDigits: 2 })}
         </span>
@@ -198,7 +206,7 @@ export function DashboardPage() {
           >
             <div className="tf-table-scroll">
               <Table
-                rowKey={(row: Record<string, unknown>) => `${row.email}-${row.name}`}
+                rowKey={(row: TopBeneficiary) => `${row.email}-${row.name}`}
                 columns={topBeneficiariesColumns}
                 dataSource={statisticsData?.topBeneficiaries ?? []}
                 pagination={false}
@@ -217,7 +225,7 @@ export function DashboardPage() {
             className="tf-panel-card"
           >
             <Space direction="vertical" size={14} style={{ width: '100%' }}>
-              {statisticsData?.statusDistribution.map((item: Record<string, unknown>) => (
+              {statisticsData?.statusDistribution.map((item: DistributionItem) => (
                 <div key={item.status} className="tf-distribution-row">
                   <div className="tf-distribution-label">
                     <Tag color={item.status === 'rejected' ? 'red' : 'blue'}>
@@ -247,7 +255,7 @@ export function DashboardPage() {
             <Space direction="vertical" size={14} style={{ width: '100%' }}>
               {statisticsData?.bankDistribution
                 .slice(0, 5)
-                .map((item: Record<string, unknown>, i: number) => (
+                .map((item: BankDistributionItem, i: number) => (
                   <div key={item.bank} className="tf-distribution-row">
                     <div className="tf-distribution-label">
                       <span className="tf-distribution-name" title={item.bank}>

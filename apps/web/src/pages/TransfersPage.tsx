@@ -7,7 +7,6 @@ import {
   Button,
   Card,
   Col,
-  DatePicker,
   Form,
   Input,
   InputNumber,
@@ -20,7 +19,6 @@ import {
   Typography,
 } from 'antd';
 import type { Breakpoint } from 'antd/es/_util/responsiveObserver';
-import dayjs from 'dayjs';
 import type { InferResponseType } from 'hono/client';
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router';
@@ -32,11 +30,6 @@ import { translateStatus } from '../lib/status';
 type ListResponse = InferResponseType<typeof client.api.transfers.$get>;
 type TransferItem = ListResponse extends { transfers: infer T } ? T : never;
 type Transfer = TransferItem extends Array<infer U> ? U : never;
-
-const statusColor: Record<string, string> = {
-  initiated: 'blue',
-  rejected: 'red',
-};
 
 export function TransfersPage() {
   const { data: session, isPending: sessionLoading } = useSession();
@@ -51,7 +44,6 @@ export function TransfersPage() {
 
   const isAuthed = Boolean(session);
 
-  // Générer une référence de transaction aléatoire
   const generateTransactionReference = useCallback(() => {
     const chars = '0123456789ABCDEF';
     let result = '';
@@ -60,11 +52,6 @@ export function TransfersPage() {
     }
     return result;
   }, []);
-
-  // Générer la date d'exécution actuelle (Europe/Bruxelles)
-  const generateExecutionDate = () => {
-    return dayjs();
-  };
 
   // Initialiser le formulaire avec les valeurs par défaut
   useEffect(() => {
@@ -123,7 +110,12 @@ export function TransfersPage() {
   });
 
   const rejectTransfer = useMutation({
-    mutationFn: async (values: Record<string, unknown>) => {
+    mutationFn: async (values: {
+      id: string;
+      rejectionFee?: number;
+      rejectionFeeCurrency?: string;
+      rejectionReason: string;
+    }) => {
       const res = await client.api.transfers[':id'].reject.$put({
         param: { id: values.id },
         json: {
@@ -132,11 +124,11 @@ export function TransfersPage() {
           rejectionReason: values.rejectionReason,
         },
       });
+      const data = await res.json();
       if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || 'Échec du rejet du virement');
+        throw new Error('error' in data && data.error ? data.error : 'Échec du rejet du virement');
       }
-      return res.json();
+      return data;
     },
     onSuccess: () => {
       message.success('Virement rejeté');

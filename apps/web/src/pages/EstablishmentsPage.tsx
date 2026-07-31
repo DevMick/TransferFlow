@@ -18,9 +18,7 @@ import {
   Row,
   Space,
   Table,
-  Typography,
   Upload,
-  message,
 } from 'antd';
 import type { UploadFile } from 'antd/es/upload/interface';
 import { useState } from 'react';
@@ -28,10 +26,20 @@ import { client } from '../lib/api';
 import { useSession } from '../lib/auth-client';
 import { getErrorMessage } from '../lib/errors';
 
-const { Title } = Typography;
-
 interface Establishment {
   id: string;
+  logoPath?: string | null;
+  nomEtablissement: string;
+  formeJuridique?: string | null;
+  adresseRue?: string | null;
+  codePostal?: string | null;
+  ville?: string | null;
+  pays?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface EstablishmentInput {
   logoPath?: string;
   nomEtablissement: string;
   formeJuridique?: string;
@@ -39,8 +47,6 @@ interface Establishment {
   codePostal?: string;
   ville?: string;
   pays?: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export function EstablishmentsPage() {
@@ -63,7 +69,7 @@ export function EstablishmentsPage() {
   });
 
   const createEstablishment = useMutation({
-    mutationFn: async (values: Record<string, unknown>) => {
+    mutationFn: async (values: EstablishmentInput) => {
       const res = await client.api.establishments.$post({ json: values });
       if (!res.ok) throw new Error("Échec de la création de l'établissement");
       return res.json();
@@ -79,7 +85,7 @@ export function EstablishmentsPage() {
   });
 
   const updateEstablishment = useMutation({
-    mutationFn: async ({ id, values }: { id: string; values: Record<string, unknown> }) => {
+    mutationFn: async ({ id, values }: { id: string; values: EstablishmentInput }) => {
       const res = await client.api.establishments[':id'].$put({
         param: { id },
         json: values,
@@ -160,19 +166,20 @@ export function EstablishmentsPage() {
     }
   };
 
-  const handleSubmit = async (values: Record<string, unknown>) => {
+  const handleSubmit = async (values: EstablishmentInput) => {
     let logoPath = undefined;
 
     // Upload l'image si un nouveau fichier est sélectionné
-    if (fileList.length > 0 && fileList[0].originFileObj) {
+    const firstFile = fileList[0];
+    if (firstFile?.originFileObj) {
       try {
-        logoPath = await handleUpload(fileList[0].originFileObj as File);
+        logoPath = await handleUpload(firstFile.originFileObj as File);
       } catch (error) {
         return; // L'erreur est déjà gérée dans handleUpload
       }
-    } else if (fileList.length > 0 && fileList[0].url) {
+    } else if (firstFile?.url) {
       // Utiliser l'URL existante
-      logoPath = fileList[0].url;
+      logoPath = firstFile.url;
     }
 
     const dataToSend = { ...values, logoPath };

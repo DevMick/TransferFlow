@@ -315,8 +315,7 @@ export const transfersRouter = new Hono<AuthEnv>()
 
     const pdfBuffer = generateInitiationPdf(row, est);
 
-    // @ts-ignore Buffer is compatible with BodyInit in Node.js
-    return new Response(pdfBuffer, {
+    return new Response(new Uint8Array(pdfBuffer), {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="virement-${(row.transactionReference || id).toString().toLowerCase()}.pdf"`,
@@ -353,7 +352,7 @@ export const transfersRouter = new Hono<AuthEnv>()
 
     const pdfBuffer = generateRejectionPdf(row, est);
 
-    return new Response(pdfBuffer, {
+    return new Response(new Uint8Array(pdfBuffer), {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="rejet-${(row.transactionReference || id).toString().toLowerCase()}.pdf"`,
@@ -379,7 +378,7 @@ export const transfersRouter = new Hono<AuthEnv>()
 
     const csvBuffer = await ExportService.exportToCSV(rows);
 
-    return new Response(csvBuffer, {
+    return new Response(new Uint8Array(csvBuffer), {
       headers: {
         'Content-Type': 'text/csv',
         'Content-Disposition': 'attachment; filename="transfers-export.csv"',
@@ -405,7 +404,7 @@ export const transfersRouter = new Hono<AuthEnv>()
 
     const excelBuffer = await ExportService.exportToExcel(rows);
 
-    return new Response(excelBuffer, {
+    return new Response(new Uint8Array(excelBuffer), {
       headers: {
         'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'Content-Disposition': 'attachment; filename="transfers-export.xlsx"',
@@ -431,7 +430,7 @@ export const transfersRouter = new Hono<AuthEnv>()
 
     const pdfBuffer = await ExportService.exportToPDF(rows);
 
-    return new Response(pdfBuffer, {
+    return new Response(new Uint8Array(pdfBuffer), {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': 'attachment; filename="transfers-export.pdf"',
