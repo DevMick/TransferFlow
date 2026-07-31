@@ -245,24 +245,26 @@ export function DashboardPage() {
             className="tf-panel-card"
           >
             <Space direction="vertical" size={14} style={{ width: '100%' }}>
-              {statisticsData?.bankDistribution.slice(0, 5).map((item: Record<string, unknown>, i: number) => (
-                <div key={item.bank} className="tf-distribution-row">
-                  <div className="tf-distribution-label">
-                    <span className="tf-distribution-name" title={item.bank}>
-                      {item.bank}
-                    </span>
-                    <span className="tf-distribution-count">
-                      {item.count} · {item.percentage.toFixed(1)}%
-                    </span>
+              {statisticsData?.bankDistribution
+                .slice(0, 5)
+                .map((item: Record<string, unknown>, i: number) => (
+                  <div key={item.bank} className="tf-distribution-row">
+                    <div className="tf-distribution-label">
+                      <span className="tf-distribution-name" title={item.bank}>
+                        {item.bank}
+                      </span>
+                      <span className="tf-distribution-count">
+                        {item.count} · {item.percentage.toFixed(1)}%
+                      </span>
+                    </div>
+                    <Progress
+                      percent={item.percentage}
+                      showInfo={false}
+                      strokeColor={DISTRIBUTION_COLORS[i % DISTRIBUTION_COLORS.length]}
+                      size="small"
+                    />
                   </div>
-                  <Progress
-                    percent={item.percentage}
-                    showInfo={false}
-                    strokeColor={DISTRIBUTION_COLORS[i % DISTRIBUTION_COLORS.length]}
-                    size="small"
-                  />
-                </div>
-              ))}
+                ))}
             </Space>
           </Card>
         </Col>

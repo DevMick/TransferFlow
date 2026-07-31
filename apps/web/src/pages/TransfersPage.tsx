@@ -22,7 +22,7 @@ import {
 import type { Breakpoint } from 'antd/es/_util/responsiveObserver';
 import dayjs from 'dayjs';
 import type { InferResponseType } from 'hono/client';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { baseUrl, client } from '../lib/api';
 import { useSession } from '../lib/auth-client';
@@ -52,14 +52,14 @@ export function TransfersPage() {
   const isAuthed = Boolean(session);
 
   // Générer une référence de transaction aléatoire
-  const generateTransactionReference = () => {
+  const generateTransactionReference = useCallback(() => {
     const chars = '0123456789ABCDEF';
     let result = '';
     for (let i = 0; i < 8; i++) {
       result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     return result;
-  };
+  }, []);
 
   // Générer la date d'exécution actuelle (Europe/Bruxelles)
   const generateExecutionDate = () => {
