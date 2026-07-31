@@ -18,7 +18,8 @@
       "PowerShell(Stop-Process -Force)",
       "PowerShell(\"Processes stopped\")",
       "PowerShell(\"Servers should be started\")",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }

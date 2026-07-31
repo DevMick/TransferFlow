@@ -1,0 +1,20 @@
+[Unit]
+Description=TransferFlow API Service
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+User=transferflow
+WorkingDirectory=/var/www/transfertsecur.com/app
+Environment="NODE_ENV=production"
+Environment="PORT=3000"
+ExecStart=/usr/bin/node /var/www/transfertsecur.com/app/apps/api/dist/index.js
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=transferflow-api
+
+[Install]
+WantedBy=multi-user.target
