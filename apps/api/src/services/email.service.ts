@@ -55,7 +55,7 @@ const emailTemplates = {
     // Rejet
     subjectReject: 'Virement rejeté',
     introReject:
-      'Nous avons le regret de vous informer que le virement que vous deviez recevoir n\'a pas pu être traité en raison d\'un blocage sur le compte de l\'émetteur.',
+      "Nous avons le regret de vous informer que le virement que vous deviez recevoir n'a pas pu être traité en raison d'un blocage sur le compte de l'émetteur.",
     rejectedAmount: 'MONTANT REJETÉ',
     redirectionFee: 'Frais de redirection applicables',
     rejectionDetails: 'Détails du rejet',
@@ -64,7 +64,8 @@ const emailTemplates = {
     rejectionStatus: 'Statut',
     blockedStatus: 'BLOQUÉ / ÉCHOUÉ',
     whatToDo: 'Que faire maintenant ?',
-    whatToDoText: 'Veuillez contacter le donneur d\'ordre afin qu\'il paye les frais de rejet pour relancer la transaction.',
+    whatToDoText:
+      "Veuillez contacter le donneur d'ordre afin qu'il paye les frais de rejet pour relancer la transaction.",
   },
   nl: {
     subject: 'Overboekingsopdracht geïnitieerd',
@@ -101,7 +102,8 @@ const emailTemplates = {
     rejectionStatus: 'Status',
     blockedStatus: 'GEBLOKKEERD / MISLUKT',
     whatToDo: 'Wat nu te doen?',
-    whatToDoText: 'Neem contact op met de opdrachtgever zodat hij de weigeringskosten betaalt om de transactie te herstarten.',
+    whatToDoText:
+      'Neem contact op met de opdrachtgever zodat hij de weigeringskosten betaalt om de transactie te herstarten.',
   },
 };
 
@@ -110,8 +112,11 @@ export async function sendTransferNotificationEmail(
 ): Promise<void> {
   // Validation des champs requis
   if (!params.recipientEmail || !params.recipientName) {
-    console.error('Champs requis manquants pour l\'email:', { recipientEmail: params.recipientEmail, recipientName: params.recipientName });
-    throw new Error('Champs requis manquants pour l\'email');
+    console.error("Champs requis manquants pour l'email:", {
+      recipientEmail: params.recipientEmail,
+      recipientName: params.recipientName,
+    });
+    throw new Error("Champs requis manquants pour l'email");
   }
 
   const language = params.language === 'nl' ? 'nl' : 'fr';
@@ -119,25 +124,32 @@ export async function sendTransferNotificationEmail(
   const isRejection = !!params.rejectionReason;
   const subject = isRejection ? template.subjectReject : template.subject;
 
-  const rejectionFeeSection = isRejection && params.rejectionFee ? `
+  const rejectionFeeSection =
+    isRejection && params.rejectionFee
+      ? `
           <div class="rejection-amounts">
             <div class="amount-label">${template.redirectionFee}</div>
             <div class="amount-value">${params.rejectionFee} ${params.rejectionFeeCurrency || params.currency}</div>
           </div>
-          ` : '';
+          `
+      : '';
 
-  const rejectionReasonSection = isRejection ? `
+  const rejectionReasonSection = isRejection
+    ? `
             <div class="detail-row">
               <span class="detail-label">${template.rejectionReasonLabel}:</span>
               <span class="detail-value">${params.rejectionReason}</span>
             </div>
-            ` : '';
+            `
+    : '';
 
-  const senderSection = params.senderName ? `
+  const senderSection = params.senderName
+    ? `
               <div class="detail-row">
               <span class="detail-label">${template.sender}:</span>
               <span class="detail-value">${params.senderName}</span>
-            </div>` : '';
+            </div>`
+    : '';
 
   const timeSection = !isRejection ? `<p><strong>${template.time}</strong></p>` : '';
 

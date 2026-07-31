@@ -5,7 +5,18 @@ import {
   WalletOutlined,
 } from '@ant-design/icons';
 import { useQuery } from '@tanstack/react-query';
-import { App as AntdApp, Card, Col, Progress, Row, Space, Statistic, Table, Tag, Tooltip } from 'antd';
+import {
+  App as AntdApp,
+  Card,
+  Col,
+  Progress,
+  Row,
+  Space,
+  Statistic,
+  Table,
+  Tag,
+  Tooltip,
+} from 'antd';
 import type { Breakpoint } from 'antd/es/_util/responsiveObserver';
 import type { InferResponseType } from 'hono/client';
 import { client } from '../lib/api';

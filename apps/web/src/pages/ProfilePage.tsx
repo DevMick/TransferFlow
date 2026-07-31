@@ -6,7 +6,17 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { App as AntdApp, Avatar, Button, Card, Divider, Form, Input, Space, Typography } from 'antd';
+import {
+  App as AntdApp,
+  Avatar,
+  Button,
+  Card,
+  Divider,
+  Form,
+  Input,
+  Space,
+  Typography,
+} from 'antd';
 import { useNavigate } from 'react-router';
 import { client } from '../lib/api';
 import { signOut, useSession } from '../lib/auth-client';
@@ -125,14 +135,18 @@ export function ProfilePage() {
             name="currentPassword"
             rules={[{ required: true, message: 'Le mot de passe actuel est requis' }]}
           >
-            <Input.Password prefix={<LockOutlined style={{ color: 'var(--tf-muted, #8c8c8c)' }} />} />
+            <Input.Password
+              prefix={<LockOutlined style={{ color: 'var(--tf-muted, #8c8c8c)' }} />}
+            />
           </Form.Item>
           <Form.Item
             label="Nouveau mot de passe"
             name="newPassword"
             rules={[{ required: true, min: 8, message: 'Au moins 8 caractères' }]}
           >
-            <Input.Password prefix={<LockOutlined style={{ color: 'var(--tf-muted, #8c8c8c)' }} />} />
+            <Input.Password
+              prefix={<LockOutlined style={{ color: 'var(--tf-muted, #8c8c8c)' }} />}
+            />
           </Form.Item>
           <Button type="primary" htmlType="submit" loading={changePassword.isPending}>
             Changer le mot de passe

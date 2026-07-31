@@ -43,7 +43,7 @@ const LABELS = {
     amountTitle: 'MONTANT DU VIREMENT',
     rejectionReasonTitle: 'MOTIF DU REJET',
     rejectedAt: 'Date de rejet',
-    rejectionDetailsTitle: 'DÉTAILS DE L\'OPÉRATION — FRAIS DE REDIRECTION',
+    rejectionDetailsTitle: "DÉTAILS DE L'OPÉRATION — FRAIS DE REDIRECTION",
     initialAmount: 'Montant initial',
     redirectionFee: 'Frais de redirection',
     importantNotice: 'AVIS IMPORTANT',
@@ -300,9 +300,9 @@ function buildDocument(
 
   // --- Informations des parties ---
   // biome-ignore lint: jspdf-autotable augments the jsPDF instance at runtime
-  y = (doc as any).lastAutoTable.finalY + 6;
+  y = (doc as Record<string, unknown>).lastAutoTable.finalY + 6;
 
-  const partyBody: any[] = [];
+  const partyBody: string[][] = [];
   if (transfer.senderBank || transfer.senderAccountName || transfer.senderAccountNumber) {
     partyBody.push([
       {
@@ -510,6 +510,12 @@ export function generateRejectionPdf(
   rejectionFee?: number,
   rejectionFeeCurrency?: string,
 ): Buffer {
-  const doc = buildDocument(transfer, establishment, 'rejection', rejectionFee, rejectionFeeCurrency);
+  const doc = buildDocument(
+    transfer,
+    establishment,
+    'rejection',
+    rejectionFee,
+    rejectionFeeCurrency,
+  );
   return Buffer.from(new Uint8Array(doc.output('arraybuffer')));
 }

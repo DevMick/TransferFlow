@@ -1,7 +1,28 @@
-import { BankOutlined, DeleteOutlined, EditOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
-import { App as AntdApp, Button, Card, Col, Form, Image, Input, message, Modal, Row, Space, Table, Typography, Upload } from 'antd';
-import type { UploadFile } from 'antd/es/upload/interface';
+import {
+  BankOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  PlusOutlined,
+  UploadOutlined,
+} from '@ant-design/icons';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  App as AntdApp,
+  Button,
+  Card,
+  Col,
+  Form,
+  Image,
+  Input,
+  Modal,
+  Row,
+  Space,
+  Table,
+  Typography,
+  Upload,
+  message,
+} from 'antd';
+import type { UploadFile } from 'antd/es/upload/interface';
 import { useState } from 'react';
 import { client } from '../lib/api';
 import { useSession } from '../lib/auth-client';
@@ -42,9 +63,9 @@ export function EstablishmentsPage() {
   });
 
   const createEstablishment = useMutation({
-    mutationFn: async (values: any) => {
+    mutationFn: async (values: Record<string, unknown>) => {
       const res = await client.api.establishments.$post({ json: values });
-      if (!res.ok) throw new Error('Échec de la création de l\'établissement');
+      if (!res.ok) throw new Error("Échec de la création de l'établissement");
       return res.json();
     },
     onSuccess: () => {
@@ -58,12 +79,12 @@ export function EstablishmentsPage() {
   });
 
   const updateEstablishment = useMutation({
-    mutationFn: async ({ id, values }: { id: string; values: any }) => {
+    mutationFn: async ({ id, values }: { id: string; values: Record<string, unknown> }) => {
       const res = await client.api.establishments[':id'].$put({
         param: { id },
         json: values,
       });
-      if (!res.ok) throw new Error('Échec de la mise à jour de l\'établissement');
+      if (!res.ok) throw new Error("Échec de la mise à jour de l'établissement");
       return res.json();
     },
     onSuccess: () => {
@@ -80,7 +101,7 @@ export function EstablishmentsPage() {
   const deleteEstablishment = useMutation({
     mutationFn: async (id: string) => {
       const res = await client.api.establishments[':id'].$delete({ param: { id } });
-      if (!res.ok) throw new Error('Échec de la suppression de l\'établissement');
+      if (!res.ok) throw new Error("Échec de la suppression de l'établissement");
       return res.json();
     },
     onSuccess: () => {
@@ -134,14 +155,14 @@ export function EstablishmentsPage() {
       const data = await res.json();
       return data.url;
     } catch (error) {
-      messageApi.error('Erreur lors de l\'upload de l\'image');
+      messageApi.error("Erreur lors de l'upload de l'image");
       throw error;
     }
   };
 
   const handleSubmit = async (values: any) => {
     let logoPath = undefined;
-    
+
     // Upload l'image si un nouveau fichier est sélectionné
     if (fileList.length > 0 && fileList[0].originFileObj) {
       try {
@@ -168,15 +189,23 @@ export function EstablishmentsPage() {
       title: 'Logo',
       dataIndex: 'logoPath',
       key: 'logoPath',
-      render: (logoPath: string) => (
+      render: (logoPath: string) =>
         logoPath ? (
           <Image src={logoPath} width={40} height={40} style={{ objectFit: 'cover' }} />
         ) : (
-          <div style={{ width: 40, height: 40, background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              background: '#f0f0f0',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
             <BankOutlined />
           </div>
-        )
-      ),
+        ),
     },
     {
       title: 'Nom',
@@ -192,7 +221,9 @@ export function EstablishmentsPage() {
       title: 'Adresse',
       key: 'adresse',
       render: (_: unknown, record: Establishment) => {
-        const parts = [record.adresseRue, record.codePostal, record.ville, record.pays].filter(Boolean);
+        const parts = [record.adresseRue, record.codePostal, record.ville, record.pays].filter(
+          Boolean,
+        );
         return parts.join(', ') || '-';
       },
     },
@@ -204,7 +235,12 @@ export function EstablishmentsPage() {
           <Button size="small" icon={<EditOutlined />} onClick={() => handleEdit(record)}>
             Modifier
           </Button>
-          <Button size="small" danger icon={<DeleteOutlined />} onClick={() => handleDelete(record.id)}>
+          <Button
+            size="small"
+            danger
+            icon={<DeleteOutlined />}
+            onClick={() => handleDelete(record.id)}
+          >
             Supprimer
           </Button>
         </Space>
@@ -236,7 +272,7 @@ export function EstablishmentsPage() {
       </Card>
 
       <Modal
-        title={editingId ? 'Modifier l\'établissement' : 'Nouvel établissement'}
+        title={editingId ? "Modifier l'établissement" : 'Nouvel établissement'}
         open={isModalOpen}
         onCancel={() => {
           setIsModalOpen(false);
@@ -314,7 +350,11 @@ export function EstablishmentsPage() {
 
           <Form.Item>
             <Space>
-              <Button type="primary" htmlType="submit" loading={createEstablishment.isPending || updateEstablishment.isPending}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={createEstablishment.isPending || updateEstablishment.isPending}
+              >
                 {editingId ? 'Mettre à jour' : 'Créer'}
               </Button>
               <Button onClick={() => setIsModalOpen(false)}>Annuler</Button>

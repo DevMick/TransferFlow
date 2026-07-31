@@ -1,4 +1,4 @@
-import { type Context, type Next } from 'hono';
+import type { Context, Next } from 'hono';
 
 interface RateLimitStore {
   count: number;

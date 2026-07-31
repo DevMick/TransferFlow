@@ -74,25 +74,31 @@ export function TransferDetailPage() {
             <Descriptions.Item label="E-mail du bénéficiaire">
               {transfer.beneficiaryEmail || '-'}
             </Descriptions.Item>
-            <Descriptions.Item label="Code BIC/SWIFT">
-              {transfer.bicSwift || '-'}
-            </Descriptions.Item>
+            <Descriptions.Item label="Code BIC/SWIFT">{transfer.bicSwift || '-'}</Descriptions.Item>
             <Descriptions.Item label="Montant">
               {transfer.amount ? `${Number(transfer.amount).toFixed(2)} ${transfer.currency}` : '-'}
             </Descriptions.Item>
             {transfer.status === 'rejected' && (
               <Descriptions.Item label="Motif du rejet">
-                {(transfer as any).rejectionReason || '-'}
+                {(transfer as Record<string, unknown>).rejectionReason || '-'}
               </Descriptions.Item>
             )}
           </Descriptions>
 
           <Space style={{ marginTop: 16 }}>
-            <Button onClick={() => window.open(`${baseUrl}/api/transfers/${transfer.id}/pdf/initiation`, '_blank')}>
+            <Button
+              onClick={() =>
+                window.open(`${baseUrl}/api/transfers/${transfer.id}/pdf/initiation`, '_blank')
+              }
+            >
               PDF
             </Button>
             {transfer.status === 'rejected' && (
-              <Button onClick={() => window.open(`${baseUrl}/api/transfers/${transfer.id}/pdf/rejection`, '_blank')}>
+              <Button
+                onClick={() =>
+                  window.open(`${baseUrl}/api/transfers/${transfer.id}/pdf/rejection`, '_blank')
+                }
+              >
                 PDF rejet
               </Button>
             )}

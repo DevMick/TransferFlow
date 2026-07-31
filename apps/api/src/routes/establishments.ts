@@ -1,15 +1,15 @@
+import { zValidator } from '@hono/zod-validator';
+import { eq } from 'drizzle-orm';
 import { Hono } from 'hono';
+import { z } from 'zod';
 import { db } from '../db';
 import { establishment } from '../db/schema';
-import { eq } from 'drizzle-orm';
-import { zValidator } from '@hono/zod-validator';
-import { z } from 'zod';
 
 const establishmentsRouter = new Hono();
 
 const createEstablishmentSchema = z.object({
   logoPath: z.string().optional(),
-  nomEtablissement: z.string().min(1, 'Le nom de l\'établissement est requis'),
+  nomEtablissement: z.string().min(1, "Le nom de l'établissement est requis"),
   formeJuridique: z.string().optional(),
   adresseRue: z.string().optional(),
   codePostal: z.string().optional(),
@@ -24,7 +24,7 @@ establishmentsRouter.post('/upload', async (c) => {
   try {
     const formData = await c.req.formData();
     const file = formData.get('file') as File;
-    
+
     if (!file) {
       return c.json({ error: 'Aucun fichier fourni' }, 400);
     }
@@ -37,7 +37,7 @@ establishmentsRouter.post('/upload', async (c) => {
 
     return c.json({ url: dataUrl });
   } catch (error) {
-    return c.json({ error: 'Erreur lors de l\'upload' }, 500);
+    return c.json({ error: "Erreur lors de l'upload" }, 500);
   }
 });
 
@@ -60,14 +60,14 @@ establishmentsRouter.get('/:id', async (c) => {
       .from(establishment)
       .where(eq(establishment.id, id))
       .limit(1);
-    
+
     if (!establishmentData.length) {
       return c.json({ error: 'Établissement non trouvé' }, 404);
     }
-    
+
     return c.json({ establishment: establishmentData[0] });
   } catch (error) {
-    return c.json({ error: 'Erreur lors de la récupération de l\'établissement' }, 500);
+    return c.json({ error: "Erreur lors de la récupération de l'établissement" }, 500);
   }
 });
 
@@ -75,14 +75,11 @@ establishmentsRouter.get('/:id', async (c) => {
 establishmentsRouter.post('/', zValidator('json', createEstablishmentSchema), async (c) => {
   const data = c.req.valid('json');
   try {
-    const newEstablishment = await db
-      .insert(establishment)
-      .values(data)
-      .returning();
-    
+    const newEstablishment = await db.insert(establishment).values(data).returning();
+
     return c.json({ establishment: newEstablishment[0] }, 201);
   } catch (error) {
-    return c.json({ error: 'Erreur lors de la création de l\'établissement' }, 500);
+    return c.json({ error: "Erreur lors de la création de l'établissement" }, 500);
   }
 });
 
@@ -96,14 +93,14 @@ establishmentsRouter.put('/:id', zValidator('json', updateEstablishmentSchema), 
       .set({ ...data, updatedAt: new Date() })
       .where(eq(establishment.id, id))
       .returning();
-    
+
     if (!updated.length) {
       return c.json({ error: 'Établissement non trouvé' }, 404);
     }
-    
+
     return c.json({ establishment: updated[0] });
   } catch (error) {
-    return c.json({ error: 'Erreur lors de la mise à jour de l\'établissement' }, 500);
+    return c.json({ error: "Erreur lors de la mise à jour de l'établissement" }, 500);
   }
 });
 
@@ -111,18 +108,15 @@ establishmentsRouter.put('/:id', zValidator('json', updateEstablishmentSchema), 
 establishmentsRouter.delete('/:id', async (c) => {
   const id = c.req.param('id');
   try {
-    const deleted = await db
-      .delete(establishment)
-      .where(eq(establishment.id, id))
-      .returning();
-    
+    const deleted = await db.delete(establishment).where(eq(establishment.id, id)).returning();
+
     if (!deleted.length) {
       return c.json({ error: 'Établissement non trouvé' }, 404);
     }
-    
+
     return c.json({ message: 'Établissement supprimé avec succès' });
   } catch (error) {
-    return c.json({ error: 'Erreur lors de la suppression de l\'établissement' }, 500);
+    return c.json({ error: "Erreur lors de la suppression de l'établissement" }, 500);
   }
 });
 

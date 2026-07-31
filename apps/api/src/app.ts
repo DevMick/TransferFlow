@@ -6,10 +6,10 @@ import { env } from './env.js';
 import { errorHandler } from './middleware/error.js';
 import { rateLimit } from './middleware/rate-limit.js';
 import { authRouter } from './routes/auth.js';
-import { transfersRouter } from './routes/transfers.js';
 import { dashboardRouter } from './routes/dashboard.js';
-import { referenceRouter } from './routes/reference.js';
 import { establishmentsRouter } from './routes/establishments.js';
+import { referenceRouter } from './routes/reference.js';
+import { transfersRouter } from './routes/transfers.js';
 
 const allowedOrigins = [env.BETTER_AUTH_URL, 'http://localhost:5173', 'http://localhost:5174'];
 
@@ -41,7 +41,12 @@ const app = new Hono()
   // Better-Auth mounts all of its own endpoints under /api/auth/*
   .on(['POST', 'GET'], '/api/auth/*', (c) => auth.handler(c.req.raw));
 
-const routes = app.route('/api/users', authRouter).route('/api/transfers', transfersRouter).route('/api/dashboard', dashboardRouter).route('/api/reference', referenceRouter).route('/api/establishments', establishmentsRouter);
+const routes = app
+  .route('/api/users', authRouter)
+  .route('/api/transfers', transfersRouter)
+  .route('/api/dashboard', dashboardRouter)
+  .route('/api/reference', referenceRouter)
+  .route('/api/establishments', establishmentsRouter);
 
 export type AppType = typeof routes;
 export { routes };

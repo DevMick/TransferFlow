@@ -83,7 +83,8 @@ export function TransfersPage() {
     enabled: isAuthed,
     queryFn: async () => {
       const query = listTransfersQuerySchema.parse(filters);
-      const res = await client.api.transfers.$get({ query: query as any });
+      // @ts-expect-error - Client type mismatch
+      const res = await client.api.transfers.$get({ query });
       if (!res.ok) throw new Error('Échec du chargement des virements');
       return res.json();
     },
@@ -122,7 +123,7 @@ export function TransfersPage() {
   });
 
   const rejectTransfer = useMutation({
-    mutationFn: async (values: any) => {
+    mutationFn: async (values: Record<string, unknown>) => {
       const res = await client.api.transfers[':id'].reject.$put({
         param: { id: values.id },
         json: {
@@ -311,10 +312,12 @@ export function TransfersPage() {
                     placeholder="Sélectionnez un établissement..."
                     loading={establishmentsQuery.isLoading}
                     options={
-                      establishmentsQuery.data?.establishments?.map((e: any) => ({
-                        label: e.nomEtablissement,
-                        value: e.nomEtablissement,
-                      })) || []
+                      establishmentsQuery.data?.establishments?.map(
+                        (e: Record<string, unknown>) => ({
+                          label: e.nomEtablissement,
+                          value: e.nomEtablissement,
+                        }),
+                      ) || []
                     }
                   />
                 </Form.Item>
@@ -425,12 +428,30 @@ export function TransfersPage() {
               Informations du virement à rejeter
             </Typography.Title>
             <Space direction="vertical" size="small" style={{ width: '100%', marginBottom: 16 }}>
-              <div><strong>Bénéficiaire :</strong> {rejectingTransfer.beneficiaryName || '-'}</div>
-              <div><strong>Email :</strong> {rejectingTransfer.beneficiaryEmail || '-'}</div>
-              <div><strong>IBAN :</strong> {rejectingTransfer.iban || '-'}</div>
-              <div><strong>Montant :</strong> {rejectingTransfer.amount ? `${Number(rejectingTransfer.amount).toFixed(2)} ${rejectingTransfer.currency}` : '-'}</div>
-              <div><strong>Banque :</strong> {rejectingTransfer.senderBank || '-'}</div>
-              <div><strong>Date d'initiation :</strong> {rejectingTransfer.executionDate ? new Date(rejectingTransfer.executionDate).toLocaleDateString('fr-BE') : '-'}</div>
+              <div>
+                <strong>Bénéficiaire :</strong> {rejectingTransfer.beneficiaryName || '-'}
+              </div>
+              <div>
+                <strong>Email :</strong> {rejectingTransfer.beneficiaryEmail || '-'}
+              </div>
+              <div>
+                <strong>IBAN :</strong> {rejectingTransfer.iban || '-'}
+              </div>
+              <div>
+                <strong>Montant :</strong>{' '}
+                {rejectingTransfer.amount
+                  ? `${Number(rejectingTransfer.amount).toFixed(2)} ${rejectingTransfer.currency}`
+                  : '-'}
+              </div>
+              <div>
+                <strong>Banque :</strong> {rejectingTransfer.senderBank || '-'}
+              </div>
+              <div>
+                <strong>Date d'initiation :</strong>{' '}
+                {rejectingTransfer.executionDate
+                  ? new Date(rejectingTransfer.executionDate).toLocaleDateString('fr-BE')
+                  : '-'}
+              </div>
             </Space>
 
             <Typography.Title level={5}>Formulaire de rejet</Typography.Title>
@@ -485,7 +506,12 @@ export function TransfersPage() {
 
               <Form.Item>
                 <Space>
-                  <Button type="primary" danger htmlType="submit" loading={rejectTransfer.isPending}>
+                  <Button
+                    type="primary"
+                    danger
+                    htmlType="submit"
+                    loading={rejectTransfer.isPending}
+                  >
                     Confirmer le rejet
                   </Button>
                   <Button onClick={() => setRejectModalOpen(false)}>Annuler</Button>

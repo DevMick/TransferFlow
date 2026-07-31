@@ -81,7 +81,9 @@ export function LoginPage() {
             <Typography.Title level={3} style={{ margin: 0 }}>
               Bienvenue sur TransferFlow
             </Typography.Title>
-            <Typography.Text type="secondary">Connectez-vous pour gérer vos virements</Typography.Text>
+            <Typography.Text type="secondary">
+              Connectez-vous pour gérer vos virements
+            </Typography.Text>
           </Space>
 
           <Segmented

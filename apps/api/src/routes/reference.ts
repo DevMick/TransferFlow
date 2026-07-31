@@ -1,7 +1,7 @@
+import { eq } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { db } from '../db/index.js';
 import { bank, currency } from '../db/schema.js';
-import { eq } from 'drizzle-orm';
 
 /**
  * Reference data routes (banks, currencies)

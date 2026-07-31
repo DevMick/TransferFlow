@@ -19,7 +19,24 @@
       "PowerShell(\"Processes stopped\")",
       "PowerShell(\"Servers should be started\")",
       "Bash(git add *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(git config *)",
+      "Bash(git push *)",
+      "Bash(GIT_TRACE=1 git push https://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@github.com/DevMick/TransferFlow.git main)",
+      "Bash(ssh -v root@195.35.0.235 \"echo 'Connexion réussie'\")",
+      "Bash(ssh -i ~/.ssh/id_ed25519_claude root@195.35.0.235 \"uname -a && echo '✅ Connexion SSH réussie'\")",
+      "Bash(cat)",
+      "Bash(chmod 600 ~/.ssh/id_ed25519_transferflow)",
+      "Bash(ssh -i ~/.ssh/id_ed25519_transferflow -o StrictHostKeyChecking=no root@195.35.0.235 \"uname -a\")",
+      "Bash(ssh -i ~/.ssh/id_ed25519_transferflow -o StrictHostKeyChecking=no root@195.35.0.235 \"node -v && pnpm -v && systemctl is-active postgresql && systemctl is-active nginx\")",
+      "Bash(ssh -i ~/.ssh/id_ed25519_transferflow -o StrictHostKeyChecking=no root@195.35.0.235 \"sleep 30 && ps aux | grep apt\")",
+      "Bash(pnpm -v)",
+      "Bash(systemctl is-active *)",
+      "Bash(ssh -i ~/.ssh/id_ed25519_transferflow -o StrictHostKeyChecking=no root@195.35.0.235 \"echo '✅ VPS Status:' && echo 'Node: '$\\(node -v\\) && echo 'pnpm: '$\\(pnpm -v\\) && echo 'PostgreSQL: '$\\(systemctl is-active postgresql\\) && echo 'Nginx: '$\\(systemctl is-active nginx\\) && echo '' && echo '🔑 SSH Key for GitHub:' && cat /var/www/transfertsecur.com/.ssh/id_ed25519.pub\")",
+      "Bash(git commit -m 'chore: mark project as production ready and trigger first deployment *)",
+      "Bash(pnpm lint:fix)",
+      "Bash(pnpm lint *)",
+      "Bash(git commit -m 'fix: resolve linting and type errors for production deployment *)"
     ]
   }
 }

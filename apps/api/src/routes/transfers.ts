@@ -1,5 +1,9 @@
 import { zValidator } from '@hono/zod-validator';
-import { createTransferSchema, listTransfersQuerySchema, rejectTransferSchema } from '@transferflow/shared';
+import {
+  createTransferSchema,
+  listTransfersQuerySchema,
+  rejectTransferSchema,
+} from '@transferflow/shared';
 import { and, desc, eq, gte, inArray, like, lte, or } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { type AuthEnv, requireAuth } from '../auth/middleware.js';
@@ -197,77 +201,73 @@ export const transfersRouter = new Hono<AuthEnv>()
 
     return c.json({ transfer: row });
   })
-  .put(
-    '/:id/reject',
-    zValidator('json', rejectTransferSchema),
-    async (c) => {
-      const user = c.get('user');
-      const id = c.req.param('id');
-      const { rejectionFee, rejectionFeeCurrency, rejectionReason } = c.req.valid('json');
+  .put('/:id/reject', zValidator('json', rejectTransferSchema), async (c) => {
+    const user = c.get('user');
+    const id = c.req.param('id');
+    const { rejectionFee, rejectionFeeCurrency, rejectionReason } = c.req.valid('json');
 
-      const [row] = await db
-        .update(transfer)
-        .set({
-          status: 'rejected',
-          rejectedAt: new Date(),
-          rejectionReason,
-          rejectionFee: rejectionFee ? rejectionFee.toFixed(4) : null,
-          rejectionFeeCurrency: rejectionFeeCurrency || 'EUR',
-          updatedAt: new Date(),
-        })
-        .where(and(eq(transfer.id, id), eq(transfer.userId, user.id)))
-        .returning();
+    const [row] = await db
+      .update(transfer)
+      .set({
+        status: 'rejected',
+        rejectedAt: new Date(),
+        rejectionReason,
+        rejectionFee: rejectionFee ? rejectionFee.toFixed(4) : null,
+        rejectionFeeCurrency: rejectionFeeCurrency || 'EUR',
+        updatedAt: new Date(),
+      })
+      .where(and(eq(transfer.id, id), eq(transfer.userId, user.id)))
+      .returning();
 
-      if (!row) {
-        return c.json({ error: 'Transfer not found' }, 404);
+    if (!row) {
+      return c.json({ error: 'Transfer not found' }, 404);
+    }
+
+    // Récupérer les informations de l'établissement émetteur
+    let establishmentName = row.senderBank || 'TransferFlow';
+    let est = null;
+    if (row.senderBank) {
+      const [found] = await db
+        .select()
+        .from(establishment)
+        .where(eq(establishment.nomEtablissement, row.senderBank))
+        .limit(1);
+      if (found) {
+        est = found;
+        establishmentName = found.nomEtablissement;
       }
+    }
 
-      // Récupérer les informations de l'établissement émetteur
-      let establishmentName = row.senderBank || 'TransferFlow';
-      let est = null;
-      if (row.senderBank) {
-        const [found] = await db
-          .select()
-          .from(establishment)
-          .where(eq(establishment.nomEtablissement, row.senderBank))
-          .limit(1);
-        if (found) {
-          est = found;
-          establishmentName = found.nomEtablissement;
-        }
-      }
+    // Générer le PDF de rejet
+    const pdfBuffer = generateRejectionPdf(row, est, rejectionFee, rejectionFeeCurrency);
 
-      // Générer le PDF de rejet
-      const pdfBuffer = generateRejectionPdf(row, est, rejectionFee, rejectionFeeCurrency);
+    // Envoyer l'email de rejet
+    try {
+      await sendTransferNotificationEmail({
+        recipientEmail: row.beneficiaryEmail || '',
+        recipientName: row.beneficiaryName || '',
+        senderName: row.senderAccountName || '',
+        amount: row.amount ? row.amount.toString() : '0',
+        currency: row.currency || 'EUR',
+        language: row.language || 'fr',
+        reference: row.transactionReference || row.id,
+        initiationDate: row.executionDate || row.createdAt,
+        establishmentName,
+        establishmentLogo: est?.logoPath ?? undefined,
+        iban: row.iban || '',
+        pdfBuffer,
+        pdfFilename: `rejet-${(row.transactionReference || row.id).toString().toLowerCase()}.pdf`,
+        rejectionReason,
+        rejectionFee: rejectionFee ? rejectionFee.toString() : '0',
+        rejectionFeeCurrency: rejectionFeeCurrency || 'EUR',
+      });
+    } catch (error) {
+      console.error("Erreur lors de l'envoi de l'email de rejet:", error);
+      // Ne pas échouer le rejet si l'email échoue
+    }
 
-      // Envoyer l'email de rejet
-      try {
-        await sendTransferNotificationEmail({
-          recipientEmail: row.beneficiaryEmail || '',
-          recipientName: row.beneficiaryName || '',
-          senderName: row.senderAccountName || '',
-          amount: row.amount ? row.amount.toString() : '0',
-          currency: row.currency || 'EUR',
-          language: row.language || 'fr',
-          reference: row.transactionReference || row.id,
-          initiationDate: row.executionDate || row.createdAt,
-          establishmentName,
-          establishmentLogo: est?.logoPath ?? undefined,
-          iban: row.iban || '',
-          pdfBuffer,
-          pdfFilename: `rejet-${(row.transactionReference || row.id).toString().toLowerCase()}.pdf`,
-          rejectionReason,
-          rejectionFee: rejectionFee ? rejectionFee.toString() : '0',
-          rejectionFeeCurrency: rejectionFeeCurrency || 'EUR',
-        });
-      } catch (error) {
-        console.error("Erreur lors de l'envoi de l'email de rejet:", error);
-        // Ne pas échouer le rejet si l'email échoue
-      }
-
-      return c.json({ transfer: row });
-    },
-  )
+    return c.json({ transfer: row });
+  })
   .put('/:id/reset', async (c) => {
     const user = c.get('user');
     const id = c.req.param('id');
