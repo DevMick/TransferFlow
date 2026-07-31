@@ -74,7 +74,7 @@ export function TransfersPage() {
         currency: 'EUR',
       });
     }
-  }, [showForm, form]);
+  }, [showForm, form, generateTransactionReference]);
 
   const filters = filterForm.getFieldsValue();
 

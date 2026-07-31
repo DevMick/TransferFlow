@@ -7,7 +7,7 @@ export interface DashboardStats {
   totalAmount: string;
   initiatedCount: number;
   rejectedCount: number;
-  recentTransfers: any[];
+  recentTransfers: Record<string, unknown>[];
 }
 
 export interface StatisticsData {

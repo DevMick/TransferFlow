@@ -74,7 +74,7 @@ export function DashboardPage() {
       title: 'Montant',
       key: 'amount',
       width: 160,
-      render: (_: unknown, row: any) => (
+      render: (_: unknown, row: Record<string, unknown>) => (
         <span style={{ whiteSpace: 'nowrap' }}>
           {Number(row.amount).toLocaleString('fr-BE', { maximumFractionDigits: 2 })} {row.currency}
         </span>
@@ -105,7 +105,7 @@ export function DashboardPage() {
       title: 'Montant total',
       key: 'totalAmount',
       width: 140,
-      render: (_: unknown, row: any) => (
+      render: (_: unknown, row: Record<string, unknown>) => (
         <span style={{ whiteSpace: 'nowrap' }}>
           {Number(row.totalAmount).toLocaleString('fr-BE', { maximumFractionDigits: 2 })}
         </span>
@@ -198,7 +198,7 @@ export function DashboardPage() {
           >
             <div className="tf-table-scroll">
               <Table
-                rowKey={(row: any) => `${row.email}-${row.name}`}
+                rowKey={(row: Record<string, unknown>) => `${row.email}-${row.name}`}
                 columns={topBeneficiariesColumns}
                 dataSource={statisticsData?.topBeneficiaries ?? []}
                 pagination={false}
@@ -217,7 +217,7 @@ export function DashboardPage() {
             className="tf-panel-card"
           >
             <Space direction="vertical" size={14} style={{ width: '100%' }}>
-              {statisticsData?.statusDistribution.map((item: any) => (
+              {statisticsData?.statusDistribution.map((item: Record<string, unknown>) => (
                 <div key={item.status} className="tf-distribution-row">
                   <div className="tf-distribution-label">
                     <Tag color={item.status === 'rejected' ? 'red' : 'blue'}>
@@ -245,7 +245,7 @@ export function DashboardPage() {
             className="tf-panel-card"
           >
             <Space direction="vertical" size={14} style={{ width: '100%' }}>
-              {statisticsData?.bankDistribution.slice(0, 5).map((item: any, i: number) => (
+              {statisticsData?.bankDistribution.slice(0, 5).map((item: Record<string, unknown>, i: number) => (
                 <div key={item.bank} className="tf-distribution-row">
                   <div className="tf-distribution-label">
                     <span className="tf-distribution-name" title={item.bank}>

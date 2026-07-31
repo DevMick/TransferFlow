@@ -299,7 +299,7 @@ function buildDocument(
   });
 
   // --- Informations des parties ---
-  // biome-ignore lint: jspdf-autotable augments the jsPDF instance at runtime
+  // @ts-ignore jspdf-autotable augments the jsPDF instance at runtime
   y = (doc as Record<string, unknown>).lastAutoTable.finalY + 6;
 
   const partyBody: string[][] = [];

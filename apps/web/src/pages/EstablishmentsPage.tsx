@@ -160,7 +160,7 @@ export function EstablishmentsPage() {
     }
   };
 
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async (values: Record<string, unknown>) => {
     let logoPath = undefined;
 
     // Upload l'image si un nouveau fichier est sélectionné

@@ -36,7 +36,8 @@
       "Bash(git commit -m 'chore: mark project as production ready and trigger first deployment *)",
       "Bash(pnpm lint:fix)",
       "Bash(pnpm lint *)",
-      "Bash(git commit -m 'fix: resolve linting and type errors for production deployment *)"
+      "Bash(git commit -m 'fix: resolve linting and type errors for production deployment *)",
+      "Bash(git commit -m 'fix: resolve remaining linting errors for production deployment *)"
     ]
   }
 }
