@@ -302,7 +302,8 @@ function buildDocument(
   // @ts-ignore jspdf-autotable augments the jsPDF instance at runtime
   y = (doc as Record<string, unknown>).lastAutoTable.finalY + 6;
 
-  const partyBody: string[][] = [];
+  // @ts-ignore jspdf-autotable types are complex
+  const partyBody: Array<Array<string | Record<string, unknown>>> = [];
   if (transfer.senderBank || transfer.senderAccountName || transfer.senderAccountNumber) {
     partyBody.push([
       {

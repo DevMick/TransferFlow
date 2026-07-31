@@ -18,7 +18,7 @@ export const errorHandler = async (c: Context, next: Next) => {
 
     // Handle different error types
     if (error instanceof Error) {
-      const status = (error as Record<string, unknown>).status || 500;
+      const status = ((error as unknown) as Record<string, unknown>).status || 500;
       const message = error.message || 'Internal server error';
 
       return c.json<ErrorResponse>(
