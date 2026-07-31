@@ -51,12 +51,17 @@ jobs:
         run: pnpm test
 
       - name: Deploy to VPS
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          script: |
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+          SCRIPT='
             cd /var/www/transfertsecur.com/app
             git fetch origin main
             git checkout main
@@ -66,6 +71,22 @@ jobs:
             pnpm build
             pnpm db:migrate
             sudo systemctl restart transferflow-api
+          '
+
+          # The VPS's network path occasionally has a transient TCP dial
+          # timeout from GitHub-hosted runners; retry a few times before
+          # failing the deploy outright.
+          max_attempts=5
+          attempt=1
+          until ssh -i ~/.ssh/deploy_key -o ConnectTimeout=20 -o StrictHostKeyChecking=yes "$VPS_USER@$VPS_HOST" "$SCRIPT"; do
+            if [ "$attempt" -ge "$max_attempts" ]; then
+              echo "SSH deploy failed after $max_attempts attempts"
+              exit 1
+            fi
+            echo "Attempt $attempt failed, retrying in 15s..."
+            attempt=$((attempt + 1))
+            sleep 15
+          done
 
       - name: Verify deployment
         run: |
