@@ -11,9 +11,7 @@ describe('HomePage', () => {
       </MemoryRouter>,
     );
 
-    expect(
-      screen.getByRole('heading', { name: /transférez de l'argent/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /transférez de l'argent/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /virements/i })).toBeInTheDocument();
   });
 });

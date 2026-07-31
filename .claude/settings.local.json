@@ -43,7 +43,8 @@
       "Bash(git commit -m 'fix: resolve TypeScript errors in pdf and error services *)",
       "Bash(git commit -m 'fix: apply formatter fix for error.ts *)",
       "Bash(git commit -m 'fix: allow typecheck to continue despite TypeScript errors *)",
-      "Bash(git commit -m 'fix: update HomePage test to use French text *)"
+      "Bash(git commit -m 'fix: update HomePage test to use French text *)",
+      "Bash(git commit -m 'fix: apply formatter fix to HomePage.test.tsx *)"
     ]
   }
 }
