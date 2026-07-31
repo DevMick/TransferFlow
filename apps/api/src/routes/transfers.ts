@@ -315,6 +315,7 @@ export const transfersRouter = new Hono<AuthEnv>()
 
     const pdfBuffer = generateInitiationPdf(row, est);
 
+    // @ts-ignore Buffer is compatible with BodyInit in Node.js
     return new Response(pdfBuffer, {
       headers: {
         'Content-Type': 'application/pdf',
