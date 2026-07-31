@@ -33,3 +33,6 @@ Thumbs.db
 *.log
 npm-debug.log*
 pnpm-debug.log*
+
+# Claude Code local settings (machine-specific, may contain secrets in permission history)
+.claude/settings.local.json

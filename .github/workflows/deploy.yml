@@ -90,9 +90,20 @@ jobs:
 
       - name: Verify deployment
         run: |
-          sleep 5
+          # Le service peut prendre plus de 5s pour redémarrer complètement ;
+          # on retente avant d'échouer pour éviter les faux négatifs.
+          max_attempts=6
+          attempt=1
+          until curl -f https://transfertsecur.com/api/health; do
+            if [ "$attempt" -ge "$max_attempts" ]; then
+              echo "Health check failed after $max_attempts attempts"
+              exit 1
+            fi
+            echo "Attempt $attempt failed, retrying in 10s..."
+            attempt=$((attempt + 1))
+            sleep 10
+          done
           curl -f https://transfertsecur.com || exit 1
-          curl -f https://transfertsecur.com/api/health || exit 1
 
       - name: Notify deployment success
         if: success()
