@@ -12,8 +12,8 @@ describe('HomePage', () => {
     );
 
     expect(
-      screen.getByRole('heading', { name: /move money with confidence/i }),
+      screen.getByRole('heading', { name: /transférez de l'argent/i }),
     ).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /view transfers/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /virements/i })).toBeInTheDocument();
   });
 });
