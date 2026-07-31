@@ -124,6 +124,12 @@ export async function sendTransferNotificationEmail(
   const isRejection = !!params.rejectionReason;
   const subject = isRejection ? template.subjectReject : template.subject;
 
+  // Le logo est stocké en data URL ; la plupart des clients mail (Gmail, Outlook)
+  // suppriment les images en data URI d'un HTML par sécurité. On l'intègre donc
+  // comme pièce jointe inline référencée par Content-ID, seule méthode fiable.
+  const logoMatch = params.establishmentLogo?.match(/^data:(image\/[a-z]+);base64,(.+)$/i);
+  const logoCid = logoMatch ? 'establishment-logo' : null;
+
   const rejectionFeeSection =
     isRejection && params.rejectionFee
       ? `
@@ -190,7 +196,7 @@ export async function sendTransferNotificationEmail(
       <div class="container">
         <div class="banner">
           <div class="banner-content">
-            ${params.establishmentLogo ? `<img src="${params.establishmentLogo}" alt="Logo" class="banner-logo" />` : ''}
+            ${logoCid ? `<img src="cid:${logoCid}" alt="Logo" class="banner-logo" />` : ''}
             <span class="banner-brand">${params.establishmentName.toUpperCase()}</span>
           </div>
           <h1>${subject}</h1>
@@ -258,21 +264,37 @@ export async function sendTransferNotificationEmail(
     </html>
   `;
 
+  const attachments: Array<{
+    filename?: string;
+    content?: Buffer;
+    contentType?: string;
+    cid?: string;
+  }> = [];
+
+  if (params.pdfBuffer) {
+    attachments.push({
+      filename: params.pdfFilename || 'virement.pdf',
+      content: params.pdfBuffer,
+      contentType: 'application/pdf',
+    });
+  }
+
+  if (logoCid && logoMatch) {
+    attachments.push({
+      filename: 'logo',
+      content: Buffer.from(logoMatch[2] ?? '', 'base64'),
+      contentType: logoMatch[1],
+      cid: logoCid,
+    });
+  }
+
   try {
     await transporter.sendMail({
-      from: 'support@transfertsecur.com',
+      from: `"${params.establishmentName}" <support@transfertsecur.com>`,
       to: params.recipientEmail,
-      subject: `${subject} - TransferFlow`,
+      subject: `${subject} - ${params.establishmentName}`,
       html: htmlContent,
-      attachments: params.pdfBuffer
-        ? [
-            {
-              filename: params.pdfFilename || 'virement.pdf',
-              content: params.pdfBuffer,
-              contentType: 'application/pdf',
-            },
-          ]
-        : undefined,
+      attachments: attachments.length > 0 ? attachments : undefined,
     });
   } catch (error) {
     console.error("Erreur lors de l'envoi de l'email:", error);
