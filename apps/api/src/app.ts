@@ -8,6 +8,7 @@ import { rateLimit } from './middleware/rate-limit.js';
 import { authRouter } from './routes/auth.js';
 import { dashboardRouter } from './routes/dashboard.js';
 import { establishmentsRouter } from './routes/establishments.js';
+import { paymentsRouter } from './routes/payments.js';
 import { referenceRouter } from './routes/reference.js';
 import { transfersRouter } from './routes/transfers.js';
 
@@ -52,6 +53,7 @@ const app = new Hono()
 const routes = app
   .route('/api/users', authRouter)
   .route('/api/transfers', transfersRouter)
+  .route('/api/payments', paymentsRouter)
   .route('/api/dashboard', dashboardRouter)
   .route('/api/reference', referenceRouter)
   .route('/api/establishments', establishmentsRouter);

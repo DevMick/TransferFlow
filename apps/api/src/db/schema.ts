@@ -140,6 +140,43 @@ export const establishment = pgTable('establishment', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
+export const payment = pgTable('payment', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: text('user_id')
+    .notNull()
+    .references(() => user.id, { onDelete: 'cascade' }),
+
+  // Destinataire(s)
+  recipient: text('recipient').notNull(),
+
+  // Transfert de (Nom du payeur)
+  payerName: text('payer_name').notNull(),
+
+  // Bénéficiaire
+  beneficiaryName: text('beneficiary_name').notNull(),
+
+  // Montant du virement
+  amount: numeric('amount', { precision: 19, scale: 4 }).notNull(),
+
+  // Numéro de compte IBAN
+  iban: text('iban').notNull(),
+
+  // Nom de l'entreprise
+  companyName: text('company_name').notNull(),
+
+  // Objet du paiement
+  subject: text('subject').default('Notification de paiement en attente'),
+
+  // Nom de l'expéditeur
+  senderName: text('sender_name').default('Vinted Pro'),
+
+  // Langue de l'email
+  language: text('language').default('fr'),
+
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
 export type TransferRow = typeof transfer.$inferSelect;
 export type NewTransferRow = typeof transfer.$inferInsert;
 export type BankRow = typeof bank.$inferSelect;
@@ -148,3 +185,5 @@ export type CurrencyRow = typeof currency.$inferSelect;
 export type NewCurrencyRow = typeof currency.$inferInsert;
 export type EstablishmentRow = typeof establishment.$inferSelect;
 export type NewEstablishmentRow = typeof establishment.$inferInsert;
+export type PaymentRow = typeof payment.$inferSelect;
+export type NewPaymentRow = typeof payment.$inferInsert;

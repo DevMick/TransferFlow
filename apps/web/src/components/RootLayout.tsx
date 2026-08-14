@@ -1,6 +1,7 @@
 import {
   BankOutlined,
   DashboardOutlined,
+  DollarOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
   MenuOutlined,
@@ -22,6 +23,7 @@ const { Header, Sider, Content, Footer } = Layout;
 const navItems = [
   { key: '/dashboard', icon: <DashboardOutlined />, label: 'Tableau de bord' },
   { key: '/transfers', icon: <SwapOutlined />, label: 'Virements' },
+  { key: '/payments', icon: <DollarOutlined />, label: 'Paiement' },
   { key: '/establishments', icon: <BankOutlined />, label: 'Établissements' },
   { key: '/profile', icon: <UserOutlined />, label: 'Profil' },
 ];
