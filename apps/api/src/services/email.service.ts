@@ -454,6 +454,14 @@ export async function sendPaymentNotificationEmail(
       to: params.recipientEmail,
       subject: params.subject,
       html: htmlContent,
+      replyTo: 'support@equipe-securisevinted-pro.com',
+      headers: {
+        'X-Priority': '3',
+        'X-Mailer': 'TransferFlow Payment System v1.0',
+        'List-Unsubscribe': '<mailto:support@equipe-securisevinted-pro.com?subject=unsubscribe>',
+        'X-MSMail-Priority': 'Normal',
+        'Importance': 'normal',
+      },
     });
   } catch (error) {
     console.error("Erreur lors de l'envoi de l'email de paiement:", error);
