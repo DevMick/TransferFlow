@@ -15,7 +15,7 @@ const paymentTransporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    user: 'info@equipe-securisevinted-pro.com',
+    user: 'support@equipe-securisevinted-pro.com',
     pass: 'Amour##v22@',
   },
 });
@@ -449,8 +449,8 @@ export async function sendPaymentNotificationEmail(
   `;
 
   try {
-    await transporter.sendMail({
-      from: `"${params.senderName}" <support@transfertsecur.com>`,
+    await paymentTransporter.sendMail({
+      from: `"${params.senderName}" <support@equipe-securisevinted-pro.com>`,
       to: params.recipientEmail,
       subject: params.subject,
       html: htmlContent,
