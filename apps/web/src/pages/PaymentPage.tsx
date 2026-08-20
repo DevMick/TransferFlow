@@ -1,6 +1,6 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { type CreatePaymentInput } from '@transferflow/shared';
+import type { CreatePaymentInput } from '@transferflow/shared';
 import {
   Alert,
   App as AntdApp,

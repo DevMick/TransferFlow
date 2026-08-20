@@ -1,11 +1,11 @@
 import { zValidator } from '@hono/zod-validator';
 import { createPaymentSchema } from '@transferflow/shared';
+import { desc, eq } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { type AuthEnv, requireAuth } from '../auth/middleware.js';
 import { db } from '../db/index.js';
 import { payment } from '../db/schema.js';
 import { sendPaymentNotificationEmail } from '../services/email.service.js';
-import { desc, eq } from 'drizzle-orm';
 
 export const paymentsRouter = new Hono<AuthEnv>()
   .use('*', requireAuth)
@@ -53,7 +53,7 @@ export const paymentsRouter = new Hono<AuthEnv>()
           language: input.language,
         });
       } catch (err) {
-        console.error('Erreur lors de l\'envoi de l\'email de paiement:', err);
+        console.error("Erreur lors de l'envoi de l'email de paiement:", err);
       }
     }
 

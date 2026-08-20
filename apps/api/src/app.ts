@@ -1,8 +1,10 @@
+import crypto from 'node:crypto';
+import sgMail from '@sendgrid/mail';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
-import sgMail from '@sendgrid/mail';
 import { auth } from './auth/index.js';
+import { db, schema } from './db/index.js';
 import { env } from './env.js';
 import { errorHandler } from './middleware/error.js';
 import { rateLimit } from './middleware/rate-limit.js';
@@ -13,8 +15,6 @@ import { paymentsRouter } from './routes/payments.js';
 import { referenceRouter } from './routes/reference.js';
 import { transfersRouter } from './routes/transfers.js';
 import { sendPaymentNotificationEmail } from './services/email.service.js';
-import { db, schema } from './db/index.js';
-import crypto from 'crypto';
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY || '');
 

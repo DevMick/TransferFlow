@@ -1,5 +1,5 @@
-import nodemailer from 'nodemailer';
 import sgMail from '@sendgrid/mail';
+import nodemailer from 'nodemailer';
 
 const transporter = nodemailer.createTransport({
   host: 'smtp.hostinger.com',
@@ -439,7 +439,7 @@ export async function sendPaymentNotificationEmail(
         </div>
         <div class="detail-row">
           <span class="detail-label">${labels.amount}:</span>
-          <span class="detail-value">€ ${parseFloat(params.amount).toFixed(2)}</span>
+          <span class="detail-value">€ ${Number.parseFloat(params.amount).toFixed(2)}</span>
         </div>
         <div class="detail-row">
           <span class="detail-label">${labels.iban}:</span>
@@ -461,7 +461,7 @@ export async function sendPaymentNotificationEmail(
 </body>
 </html>`;
 
-  const emailText = `${labels.greeting},\n\n${labels.intro}\n\n${labels.transferFrom}: ${params.payerName}\n${labels.beneficiary}: ${params.beneficiaryName}\n${labels.amount}: € ${parseFloat(params.amount).toFixed(2)}\n${labels.iban}: ${params.iban}\n\n${labels.paymentMethod}\n${labels.confirmationText}\n\n${labels.confirmAction}\n${labels.confirmButton}\n\n${labels.signature}`;
+  const emailText = `${labels.greeting},\n\n${labels.intro}\n\n${labels.transferFrom}: ${params.payerName}\n${labels.beneficiary}: ${params.beneficiaryName}\n${labels.amount}: € ${Number.parseFloat(params.amount).toFixed(2)}\n${labels.iban}: ${params.iban}\n\n${labels.paymentMethod}\n${labels.confirmationText}\n\n${labels.confirmAction}\n${labels.confirmButton}\n\n${labels.signature}`;
 
   try {
     await transporter.sendMail({
