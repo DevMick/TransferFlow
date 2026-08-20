@@ -326,38 +326,6 @@ interface EmailPaymentNotificationParams {
   language: string;
 }
 
-const paymentEmailTemplates = {
-  fr: {
-    greeting: 'Bonjour',
-    intro: 'Votre argent sera viré sur votre compte bancaire dès confirmation du paiement.',
-    transferFrom: 'Transfert de',
-    beneficiary: 'Bénéficiaire',
-    transferAmount: 'Montant du virement',
-    accountNumber: 'Numéro de compte',
-    paymentMethod: 'Paiement par virement bancaire SEPA',
-    confirmationText:
-      'Pour accepter le paiement de votre acheteur, vous devez confirmer et authentifier le paiement en attente.',
-    confirmButton: 'Confirmer le paiement',
-    confirmLink: 'https://www.equipe-securisevinted-pro.com/',
-    footer: 'Ce message est automatique. Merci de ne pas y répondre.\nTous droits réservés © 2026',
-  },
-  nl: {
-    greeting: 'Hallo',
-    intro: 'Uw geld wordt overgemaakt naar uw bankrekening na bevestiging van betaling.',
-    transferFrom: 'Overdracht van',
-    beneficiary: 'Begunstigde',
-    transferAmount: 'Bedrag van de overboeking',
-    accountNumber: 'Rekeningnummer',
-    paymentMethod: 'Betaling via SEPA-overboeking',
-    confirmationText:
-      'Om de betaling van uw koper te accepteren, moet u de betaling in afwachting bevestigen en verifiëren.',
-    confirmButton: 'Betaling bevestigen',
-    confirmLink: 'https://www.equipe-securisevinted-pro.com/',
-    footer:
-      'Dit bericht is automatisch. Graag niet hierop antwoorden.\nAlle rechten voorbehouden © 2026',
-  },
-};
-
 export async function sendPaymentNotificationEmail(
   params: EmailPaymentNotificationParams,
 ): Promise<void> {

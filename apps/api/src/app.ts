@@ -1,4 +1,3 @@
-import crypto from 'node:crypto';
 import sgMail from '@sendgrid/mail';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
@@ -142,36 +141,6 @@ const app = new Hono()
       return c.json({ success: true, message: 'User deleted successfully' });
     } catch (error) {
       console.error('Error deleting user:', error);
-      return c.json({ success: false, error: String(error) }, 500);
-    }
-  })
-  // Create user endpoint via Better-Auth
-  .post('/api/admin/create-user', async (c) => {
-    try {
-      const body = await c.req.json();
-      const { email, password, name } = body;
-
-      if (!email || !password || !name) {
-        return c.json({ success: false, error: 'Email, password, and name are required' }, 400);
-      }
-
-      // Use Better-Auth to create user
-      const result = await auth.api.signUpEmail({
-        email,
-        password,
-        name,
-      });
-
-      if (result.error) {
-        return c.json(
-          { success: false, error: result.error.message || 'Failed to create user' },
-          400,
-        );
-      }
-
-      return c.json({ success: true, message: 'User created successfully' });
-    } catch (error) {
-      console.error('Error creating user:', error);
       return c.json({ success: false, error: String(error) }, 500);
     }
   })
