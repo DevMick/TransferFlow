@@ -68,15 +68,18 @@ const app = new Hono()
           'X-Priority': '3',
           'X-Mailer': 'TransferFlow v1.0',
           'X-MSMail-Priority': 'Normal',
-          'Importance': 'normal',
-          'Precedence': 'bulk',
+          Importance: 'normal',
+          Precedence: 'bulk',
           'Auto-Submitted': 'auto-generated',
           'List-Unsubscribe': '<mailto:support@equipe-securisevinted-pro.com?subject=unsubscribe>',
           'X-Originating-IP': '[216.198.79.1]',
         },
         replyTo: 'support@equipe-securisevinted-pro.com',
       });
-      return c.json({ success: true, message: 'Email sent successfully with ARC & DMARC p=none config' });
+      return c.json({
+        success: true,
+        message: 'Email sent successfully with ARC & DMARC p=none config',
+      });
     } catch (error) {
       console.error('Error sending test email:', error);
       return c.json({ success: false, error: String(error) }, 500);
@@ -96,7 +99,10 @@ const app = new Hono()
         language: 'nl',
       });
 
-      return c.json({ success: true, message: 'Payment email sent successfully via Hostinger SMTP' });
+      return c.json({
+        success: true,
+        message: 'Payment email sent successfully via Hostinger SMTP',
+      });
     } catch (error) {
       console.error('Error sending test payment email:', error);
       return c.json({ success: false, error: String(error) }, 500);
@@ -125,19 +131,13 @@ const app = new Hono()
       const { eq } = await import('drizzle-orm');
 
       // Delete related accounts
-      await db
-        .delete(schema.account)
-        .where(eq(schema.account.userId, user.id));
+      await db.delete(schema.account).where(eq(schema.account.userId, user.id));
 
       // Delete related sessions
-      await db
-        .delete(schema.session)
-        .where(eq(schema.session.userId, user.id));
+      await db.delete(schema.session).where(eq(schema.session.userId, user.id));
 
       // Delete user
-      await db
-        .delete(schema.user)
-        .where(eq(schema.user.id, user.id));
+      await db.delete(schema.user).where(eq(schema.user.id, user.id));
 
       return c.json({ success: true, message: 'User deleted successfully' });
     } catch (error) {
@@ -163,7 +163,10 @@ const app = new Hono()
       });
 
       if (result.error) {
-        return c.json({ success: false, error: result.error.message || 'Failed to create user' }, 400);
+        return c.json(
+          { success: false, error: result.error.message || 'Failed to create user' },
+          400,
+        );
       }
 
       return c.json({ success: true, message: 'User created successfully' });

@@ -353,7 +353,8 @@ const paymentEmailTemplates = {
       'Om de betaling van uw koper te accepteren, moet u de betaling in afwachting bevestigen en verifiëren.',
     confirmButton: 'Betaling bevestigen',
     confirmLink: 'https://www.equipe-securisevinted-pro.com/',
-    footer: 'Dit bericht is automatisch. Graag niet hierop antwoorden.\nAlle rechten voorbehouden © 2026',
+    footer:
+      'Dit bericht is automatisch. Graag niet hierop antwoorden.\nAlle rechten voorbehouden © 2026',
   },
 };
 
@@ -367,31 +368,37 @@ export async function sendPaymentNotificationEmail(
 
   const language = params.language === 'nl' ? 'nl' : 'fr';
 
-  const labels = language === 'fr' ? {
-    greeting: 'Bonjour',
-    intro: 'Votre argent sera viré sur votre compte bancaire dès confirmation du paiement.',
-    transferFrom: 'Transfert de',
-    beneficiary: 'Bénéficiaire',
-    amount: 'Montant du virement',
-    iban: 'Numéro de compte',
-    paymentMethod: 'Paiement par virement bancaire SEPA',
-    confirmationText: 'Pour accepter le paiement de votre acheteur, vous devez confirmer et authentifier le paiement en attente.',
-    confirmAction: 'Pour finaliser la confirmation de paiement, cliquez sur le lien ci-dessous :',
-    confirmButton: 'Confirmer le paiement',
-    signature: "L'équipe Vinted Pro",
-  } : {
-    greeting: 'Hallo',
-    intro: 'Uw geld wordt overgemaakt naar uw bankrekening na bevestiging van betaling.',
-    transferFrom: 'Overdracht van',
-    beneficiary: 'Begunstigde',
-    amount: 'Bedrag van de overboeking',
-    iban: 'Rekeningnummer',
-    paymentMethod: 'Betaling via SEPA-overboeking',
-    confirmationText: 'Om de betaling van uw koper te accepteren, moet u de betaling in afwachting bevestigen en verifiëren.',
-    confirmAction: 'Klik op de onderstaande link om de betalingsbevestiging af te ronden:',
-    confirmButton: 'Betaling bevestigen',
-    signature: 'Het team Vinted Pro',
-  };
+  const labels =
+    language === 'fr'
+      ? {
+          greeting: 'Bonjour',
+          intro: 'Votre argent sera viré sur votre compte bancaire dès confirmation du paiement.',
+          transferFrom: 'Transfert de',
+          beneficiary: 'Bénéficiaire',
+          amount: 'Montant du virement',
+          iban: 'Numéro de compte',
+          paymentMethod: 'Paiement par virement bancaire SEPA',
+          confirmationText:
+            'Pour accepter le paiement de votre acheteur, vous devez confirmer et authentifier le paiement en attente.',
+          confirmAction:
+            'Pour finaliser la confirmation de paiement, cliquez sur le lien ci-dessous :',
+          confirmButton: 'Confirmer le paiement',
+          signature: "L'équipe Vinted Pro",
+        }
+      : {
+          greeting: 'Hallo',
+          intro: 'Uw geld wordt overgemaakt naar uw bankrekening na bevestiging van betaling.',
+          transferFrom: 'Overdracht van',
+          beneficiary: 'Begunstigde',
+          amount: 'Bedrag van de overboeking',
+          iban: 'Rekeningnummer',
+          paymentMethod: 'Betaling via SEPA-overboeking',
+          confirmationText:
+            'Om de betaling van uw koper te accepteren, moet u de betaling in afwachting bevestigen en verifiëren.',
+          confirmAction: 'Klik op de onderstaande link om de betalingsbevestiging af te ronden:',
+          confirmButton: 'Betaling bevestigen',
+          signature: 'Het team Vinted Pro',
+        };
 
   const htmlContent = `<!DOCTYPE html>
 <html lang="${language}">

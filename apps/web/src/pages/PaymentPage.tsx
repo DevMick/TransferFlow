@@ -115,11 +115,7 @@ export function PaymentPage() {
     <Space direction="vertical" size="large" style={{ width: '100%' }}>
       {showForm && (
         <Card title="Nouveau paiement">
-          <Form
-            form={form}
-            layout="vertical"
-            onFinish={(values) => createPayment.mutate(values)}
-          >
+          <Form form={form} layout="vertical" onFinish={(values) => createPayment.mutate(values)}>
             <Typography.Title level={5} style={{ marginTop: 0 }}>
               INFORMATIONS DU PAIEMENT
             </Typography.Title>
@@ -195,10 +191,7 @@ export function PaymentPage() {
                   initialValue="Notification de paiement en attente"
                   rules={[{ required: true, message: "L'objet est requis" }]}
                 >
-                  <Input.TextArea
-                    rows={2}
-                    placeholder="Notification de paiement en attente"
-                  />
+                  <Input.TextArea rows={2} placeholder="Notification de paiement en attente" />
                 </Form.Item>
               </Col>
               <Col xs={24} md={12}>
