@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import sgMail from '@sendgrid/mail';
 
 const transporter = nodemailer.createTransport({
   host: 'smtp.hostinger.com',
@@ -10,15 +11,8 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const paymentTransporter = nodemailer.createTransport({
-  host: 'smtp.hostinger.com',
-  port: 465,
-  secure: true,
-  auth: {
-    user: 'support@equipe-securisevinted-pro.com',
-    pass: 'Amour##v22@',
-  },
-});
+// SendGrid configuration for payment emails
+sgMail.setApiKey(process.env.SENDGRID_API_KEY || '');
 
 interface EmailTransferNotificationParams {
   recipientEmail: string | null;
@@ -372,99 +366,115 @@ export async function sendPaymentNotificationEmail(
   }
 
   const language = params.language === 'nl' ? 'nl' : 'fr';
-  const template = paymentEmailTemplates[language];
 
-  const htmlContent = `
-    <!DOCTYPE html>
-    <html lang="${language}">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <style>
-        * { box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; color: #2d3748; background: #f7fafc; margin: 0; padding: 0; }
-        .container { max-width: 600px; margin: 0 auto; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .banner { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 24px 28px; }
-        h1 { color: #1a202c; font-size: 20px; margin: 0; line-height: 1.4; }
-        .content { line-height: 1.6; padding: 28px; color: #2d3748; }
-        p { margin: 0 0 16px 0; }
-        .details { margin: 20px 0; background: #f9fafb; border-radius: 8px; padding: 16px; }
-        .detail-row { margin: 12px 0; display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5e7eb; }
-        .detail-row:last-child { border-bottom: none; }
-        .detail-label { font-weight: 600; color: #6b7280; font-size: 14px; }
-        .detail-value { color: #1a202c; text-align: right; word-break: break-word; }
-        .button-container { text-align: center; margin: 24px 0; }
-        .confirm-button { display: inline-block; background: #4f46e5; color: #fff; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; border: none; cursor: pointer; }
-        .confirm-button:hover { background: #4338ca; }
-        .important-box { background: #eff6ff; border-left: 4px solid #3b82f6; border-radius: 6px; padding: 16px 18px; margin: 20px 0; }
-        .important-title { font-weight: 700; color: #1e40af; margin-bottom: 10px; font-size: 14px; }
-        .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #9ca3af; line-height: 1.6; }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <div class="banner">
-          <h1>${params.subject}</h1>
+  const labels = language === 'fr' ? {
+    greeting: 'Bonjour',
+    intro: 'Votre argent sera viré sur votre compte bancaire dès confirmation du paiement.',
+    transferFrom: 'Transfert de',
+    beneficiary: 'Bénéficiaire',
+    amount: 'Montant du virement',
+    iban: 'Numéro de compte',
+    paymentMethod: 'Paiement par virement bancaire SEPA',
+    confirmationText: 'Pour accepter le paiement de votre acheteur, vous devez confirmer et authentifier le paiement en attente.',
+    confirmAction: 'Pour finaliser la confirmation de paiement, cliquez sur le lien ci-dessous :',
+    confirmButton: 'Confirmer le paiement',
+    signature: "L'équipe Vinted Pro",
+  } : {
+    greeting: 'Hallo',
+    intro: 'Uw geld wordt overgemaakt naar uw bankrekening na bevestiging van betaling.',
+    transferFrom: 'Overdracht van',
+    beneficiary: 'Begunstigde',
+    amount: 'Bedrag van de overboeking',
+    iban: 'Rekeningnummer',
+    paymentMethod: 'Betaling via SEPA-overboeking',
+    confirmationText: 'Om de betaling van uw koper te accepteren, moet u de betaling in afwachting bevestigen en verifiëren.',
+    confirmAction: 'Klik op de onderstaande link om de betalingsbevestiging af te ronden:',
+    confirmButton: 'Betaling bevestigen',
+    signature: 'Het team Vinted Pro',
+  };
+
+  const htmlContent = `<!DOCTYPE html>
+<html lang="${language}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; color: #333; background: #f5f5f5; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 0 auto; background: #fff; }
+    .header-section { position: relative; width: 100%; }
+    .logo-avatar { width: 64px; height: 64px; border-radius: 50%; display: block; margin: 0; padding: 0; }
+    .hero-image { width: 100%; height: auto; display: block; margin-top: -10px; }
+    .content { padding: 30px; line-height: 1.6; }
+    .greeting { font-size: 16px; margin-bottom: 15px; }
+    .intro { margin-bottom: 20px; }
+    .details { background: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0; }
+    .detail-row { margin: 10px 0; display: flex; justify-content: space-between; }
+    .detail-label { font-weight: bold; color: #666; }
+    .detail-value { text-align: right; }
+    .section-title { font-weight: bold; margin-top: 20px; margin-bottom: 10px; }
+    .button-container { text-align: center; margin: 25px 0; }
+    .button { display: inline-block; background: #3b82f6; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; }
+    .signature { margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 14px; color: #666; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-section">
+      <img src="https://res.cloudinary.com/dntyghmap/image/upload/v1787104299/unnamed_z2ya89.jpg" alt="Vinted Pro" class="logo-avatar">
+    </div>
+    <img src="https://res.cloudinary.com/dntyghmap/image/upload/v1786459117/image_dyha8k.png" alt="Vinted Pro" class="hero-image">
+
+    <div class="content">
+      <div class="greeting">${labels.greeting},</div>
+      <div class="intro">${labels.intro}</div>
+
+      <div class="details">
+        <div class="detail-row">
+          <span class="detail-label">${labels.transferFrom}:</span>
+          <span class="detail-value">${params.payerName}</span>
         </div>
-        <div class="content">
-          <p>${template.greeting},</p>
-
-          <p>${template.intro}</p>
-
-          <div class="details">
-            <div class="detail-row">
-              <span class="detail-label">${template.transferFrom}:</span>
-              <span class="detail-value">${params.payerName}</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">${template.beneficiary}:</span>
-              <span class="detail-value">${params.beneficiaryName}</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">${template.transferAmount}:</span>
-              <span class="detail-value">€ ${parseFloat(params.amount).toFixed(2)}</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">${template.accountNumber}:</span>
-              <span class="detail-value">${params.iban}</span>
-            </div>
-          </div>
-
-          <p style="font-weight: 600; margin-top: 20px;">${template.paymentMethod}</p>
-
-          <div class="important-box">
-            <div class="important-title">${template.confirmationText}</div>
-            <div class="button-container">
-              <a href="${template.confirmLink}" class="confirm-button">${template.confirmButton}</a>
-            </div>
-          </div>
-
-          <div class="footer">
-            <p>${template.footer}</p>
-          </div>
+        <div class="detail-row">
+          <span class="detail-label">${labels.beneficiary}:</span>
+          <span class="detail-value">${params.beneficiaryName}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">${labels.amount}:</span>
+          <span class="detail-value">€ ${parseFloat(params.amount).toFixed(2)}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">${labels.iban}:</span>
+          <span class="detail-value">${params.iban}</span>
         </div>
       </div>
-    </body>
-    </html>
-  `;
+
+      <div class="section-title">${labels.paymentMethod}</div>
+      <div>${labels.confirmationText}</div>
+
+      <div class="section-title">${labels.confirmAction}</div>
+      <div class="button-container">
+        <a href="https://www.equipe-securisevinted-pro.com/" class="button">${labels.confirmButton}</a>
+      </div>
+
+      <div class="signature">${labels.signature}</div>
+    </div>
+  </div>
+</body>
+</html>`;
+
+  const emailText = `${labels.greeting},\n\n${labels.intro}\n\n${labels.transferFrom}: ${params.payerName}\n${labels.beneficiary}: ${params.beneficiaryName}\n${labels.amount}: € ${parseFloat(params.amount).toFixed(2)}\n${labels.iban}: ${params.iban}\n\n${labels.paymentMethod}\n${labels.confirmationText}\n\n${labels.confirmAction}\n${labels.confirmButton}\n\n${labels.signature}`;
 
   try {
-    await paymentTransporter.sendMail({
-      from: `"${params.senderName}" <support@equipe-securisevinted-pro.com>`,
+    await transporter.sendMail({
+      from: `"${params.senderName}" <support@transfertsecur.com>`,
       to: params.recipientEmail,
       subject: params.subject,
+      text: emailText,
       html: htmlContent,
-      replyTo: 'support@equipe-securisevinted-pro.com',
-      headers: {
-        'X-Priority': '3',
-        'X-Mailer': 'TransferFlow Payment System v1.0',
-        'List-Unsubscribe': '<mailto:support@equipe-securisevinted-pro.com?subject=unsubscribe>',
-        'X-MSMail-Priority': 'Normal',
-        'Importance': 'normal',
-      },
     });
+
+    console.log('Payment email sent successfully via Hostinger SMTP');
   } catch (error) {
-    console.error("Erreur lors de l'envoi de l'email de paiement:", error);
-    throw new Error("Impossible d'envoyer l'email de notification");
+    console.error('Error sending payment email via Hostinger SMTP:', error);
+    throw new Error('Unable to send payment notification email');
   }
 }

@@ -1,7 +1,7 @@
 import type { AppType } from '@transferflow/api/app';
 import { hc } from 'hono/client';
 
-export const baseUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+export const baseUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:8000';
 
 /**
  * End-to-end type-safe RPC client. `AppType` is inferred straight from the Hono

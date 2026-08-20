@@ -11,7 +11,7 @@
       "name": "api",
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["--filter", "@transferflow/api", "dev"],
-      "port": 3000
+      "port": 8000
     }
   ]
 }

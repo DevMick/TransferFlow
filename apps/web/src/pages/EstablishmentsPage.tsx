@@ -153,7 +153,7 @@ export function EstablishmentsPage() {
     formData.append('file', file);
 
     try {
-      const res = await fetch('http://localhost:3000/api/establishments/upload', {
+      const res = await fetch('http://localhost:8000/api/establishments/upload', {
         method: 'POST',
         body: formData,
       });

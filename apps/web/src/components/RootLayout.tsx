@@ -28,6 +28,22 @@ const navItems = [
   { key: '/profile', icon: <UserOutlined />, label: 'Profil' },
 ];
 
+const VINTED_PRO_EMAIL = 'entreprisesecurisevinted.pro.be@gmail.com';
+
+function getNavItems(userEmail?: string) {
+  if (userEmail === VINTED_PRO_EMAIL) {
+    return [{ key: '/payments', icon: <DollarOutlined />, label: 'Paiement' }];
+  }
+  return navItems;
+}
+
+function getAppTitle(userEmail?: string) {
+  if (userEmail === VINTED_PRO_EMAIL) {
+    return 'Vinted Pro';
+  }
+  return 'TransferFlow';
+}
+
 function useIsDesktop() {
   const [isDesktop, setIsDesktop] = useState(
     () => typeof window !== 'undefined' && window.matchMedia('(min-width: 992px)').matches,
@@ -52,11 +68,12 @@ function getInitials(name?: string | null, email?: string | null) {
   return source.slice(0, 2).toUpperCase();
 }
 
-function NavMenu({ onNavigate }: { onNavigate?: () => void }) {
+function NavMenu({ onNavigate, userEmail }: { onNavigate?: () => void; userEmail?: string }) {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const items = navItems.map((item) => ({
+  const filteredNavItems = getNavItems(userEmail);
+  const items = filteredNavItems.map((item) => ({
     key: item.key,
     icon: item.icon,
     label: item.label,
@@ -87,6 +104,7 @@ function AppHeader({ isDesktop, onOpenMenu }: AppHeaderProps) {
   const { data: session } = useSession();
   const theme = useUIStore((s) => s.theme);
   const toggleTheme = useUIStore((s) => s.toggleTheme);
+  const appTitle = getAppTitle(session?.user.email);
 
   return (
     <Header className="tf-app-header">
@@ -102,7 +120,7 @@ function AppHeader({ isDesktop, onOpenMenu }: AppHeaderProps) {
       <button type="button" className="tf-logo tf-logo-btn" onClick={() => navigate('/dashboard')}>
         <SendOutlined style={{ color: '#fff', fontSize: 20 }} />
         <Typography.Text strong style={{ color: '#fff', fontSize: 18 }}>
-          TransferFlow
+          {appTitle}
         </Typography.Text>
       </button>
 
@@ -247,7 +265,7 @@ export function RootLayout() {
             }}
           >
             <div className="tf-sidebar">
-              <NavMenu />
+              <NavMenu userEmail={session?.user.email} />
             </div>
             <Button
               type="text"
@@ -267,12 +285,12 @@ export function RootLayout() {
             title={
               <Space align="center">
                 <SendOutlined />
-                <span>TransferFlow</span>
+                <span>{getAppTitle(session?.user.email)}</span>
               </Space>
             }
             styles={{ body: { padding: 0, background: '#1e1b4b' } }}
           >
-            <NavMenu onNavigate={() => setMobileOpen(false)} />
+            <NavMenu userEmail={session?.user.email} onNavigate={() => setMobileOpen(false)} />
           </Drawer>
         )}
 
