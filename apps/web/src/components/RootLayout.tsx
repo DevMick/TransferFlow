@@ -29,10 +29,19 @@ const navItems = [
 ];
 
 const VINTED_PRO_EMAIL = 'entreprisesecurisevinted.pro.be@gmail.com';
+const BLOCKED_PAYMENTS_EMAIL = 'marlon@gmail.com';
 
 function getNavItems(userEmail?: string) {
   if (userEmail === VINTED_PRO_EMAIL) {
     return [{ key: '/payments', icon: <DollarOutlined />, label: 'Paiement' }];
+  }
+  if (userEmail === BLOCKED_PAYMENTS_EMAIL) {
+    return [
+      { key: '/dashboard', icon: <DashboardOutlined />, label: 'Tableau de bord' },
+      { key: '/transfers', icon: <SwapOutlined />, label: 'Virements' },
+      { key: '/establishments', icon: <BankOutlined />, label: 'Établissements' },
+      { key: '/profile', icon: <UserOutlined />, label: 'Profil' },
+    ];
   }
   return navItems;
 }
