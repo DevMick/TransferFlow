@@ -1,4 +1,4 @@
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, LockOutlined } from '@ant-design/icons';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { CreatePaymentInput } from '@transferflow/shared';
 import {
@@ -10,6 +10,7 @@ import {
   Form,
   Input,
   InputNumber,
+  Result,
   Row,
   Select,
   Space,
@@ -19,7 +20,7 @@ import {
 import type { Breakpoint } from 'antd/es/_util/responsiveObserver';
 import type { InferResponseType } from 'hono/client';
 import { useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { client } from '../lib/api';
 import { useSession } from '../lib/auth-client';
 import { getErrorMessage } from '../lib/errors';
@@ -30,12 +31,29 @@ type Payment = PaymentItem extends Array<infer U> ? U : never;
 
 export function PaymentPage() {
   const { data: session, isPending: sessionLoading } = useSession();
+  const navigate = useNavigate();
   const { message } = AntdApp.useApp();
   const queryClient = useQueryClient();
   const [form] = Form.useForm();
   const [showForm, setShowForm] = useState(false);
 
   const isAuthed = Boolean(session);
+  const isMarlon = session?.user?.email === 'marlon@gmail.com';
+
+  if (!sessionLoading && isMarlon) {
+    return (
+      <Result
+        status="403"
+        title="Accès refusé"
+        subTitle="Vous n'avez pas accès à cette page."
+        extra={
+          <Button type="primary" onClick={() => navigate('/dashboard')}>
+            Retour au tableau de bord
+          </Button>
+        }
+      />
+    );
+  }
 
   const paymentsQuery = useQuery({
     queryKey: ['payments'],
